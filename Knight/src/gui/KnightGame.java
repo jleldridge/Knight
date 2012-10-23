@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class KnightGame extends Canvas implements KeyListener{
 	private final double FRAMES_PER_SECOND = 60;
-	private final double TIME_PER_FRAME = 1000/60;
+	private final double TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
 	
 	public KnightGame(){
 		super();
