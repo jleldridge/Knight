@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 import engine.Engine;
 
 public class KnightGame extends Canvas implements KeyListener{
-	private final double FRAMES_PER_SECOND = 60;
-	private final double TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
+	private final int FRAMES_PER_SECOND = 60;
+	private final int TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
 	Engine engine;
 	
 	public KnightGame(){
@@ -33,7 +33,7 @@ public class KnightGame extends Canvas implements KeyListener{
 		
 		while(true){
 			//code to keep the updates and renders per second around 60
-			double startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			
 			//refresh the screen
 			g.setColor(Color.blue);
@@ -46,10 +46,10 @@ public class KnightGame extends Canvas implements KeyListener{
 			cg.drawImage(screen, 0, 0, null);
 			
 			//code to keep the updates and renders per second around 60
-			double elapsedTime = System.currentTimeMillis() - startTime;
+			long elapsedTime = System.currentTimeMillis() - startTime;
 			if(elapsedTime < TIME_PER_FRAME){
 				try{
-					Thread.sleep((long)(TIME_PER_FRAME - elapsedTime));
+					Thread.sleep(TIME_PER_FRAME - elapsedTime);
 				}catch(Exception e){
 					System.out.println(e.getMessage());
 				}
