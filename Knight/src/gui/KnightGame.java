@@ -7,15 +7,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
+import engine.Engine;
+
 public class KnightGame extends Canvas implements KeyListener{
 	private final double FRAMES_PER_SECOND = 60;
 	private final double TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
+	Engine engine;
 	
 	public KnightGame(){
 		super();
 		addKeyListener(this);
 		setSize(800, 600);
 		setIgnoreRepaint(true);
+		
+		engine = new Engine();
 	}
 	
 	public void run(){
@@ -34,8 +39,8 @@ public class KnightGame extends Canvas implements KeyListener{
 			g.setColor(Color.blue);
 			g.fillRect(0, 0, 800, 600);
 			
-			//render
-			//update
+			engine.update();
+			engine.render(g);
 			
 			//draw the image to the window
 			cg.drawImage(screen, 0, 0, null);
@@ -54,12 +59,12 @@ public class KnightGame extends Canvas implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO call engine or some other keypress method
+		engine.keyPressed(e);
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO call engine or some other keypress method
+	public void keyReleased(KeyEvent e) {
+		engine.keyReleased(e);
 	}
 
 	@Override
