@@ -9,7 +9,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 public class KnightWindow extends JFrame{
-	KnightGame game;
+	private final double FRAMES_PER_SECOND = 60;
+	private final double TIME_PER_FRAME = 1000/60;
+	private KnightGame game;
 	
 	public KnightWindow(){
 		super("Knight");
@@ -31,6 +33,9 @@ public class KnightWindow extends JFrame{
 		Graphics cg = game.getGraphics();
 		
 		while(true){
+			//code to keep the updates and renders per second around 60
+			double startTime = System.currentTimeMillis();
+			
 			//refresh the screen
 			g.setColor(Color.blue);
 			g.fillRect(0, 0, 800, 600);
@@ -40,6 +45,16 @@ public class KnightWindow extends JFrame{
 			
 			//draw the image to the window
 			cg.drawImage(screen, 0, 0, null);
+			
+			//code to keep the updates and renders per second around 60
+			double elapsedTime = System.currentTimeMillis() - startTime;
+			if(elapsedTime < TIME_PER_FRAME){
+				try{
+					Thread.sleep((long)(TIME_PER_FRAME - elapsedTime));
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+				}
+			}
 		}
 	}
 }
