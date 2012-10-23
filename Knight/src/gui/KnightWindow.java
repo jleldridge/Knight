@@ -7,6 +7,5 @@ import javax.swing.JFrame;
 
 public class KnightWindow extends JFrame{
 	public KnightWindow(){
-		
 	}
 }
