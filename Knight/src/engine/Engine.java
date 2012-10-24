@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import model.Player;
 
 public class Engine {
-	final int GRAVITY = 5;
+	final int GRAVITY = 2;
 	private Player player;
 	
 	public Engine(){
@@ -19,15 +19,15 @@ public class Engine {
 		
 		//modify the player's state based on which key was pressed
 		if(code == KeyEvent.VK_LEFT){
-			player.setDx(-25);
+			player.setDx(-10);
 		}
 		else if(code == KeyEvent.VK_RIGHT){
-			player.setDx(25);
+			player.setDx(10);
 		}
 		//space key is a jump, so spike player's Dy to negative for one iteration
 		//but only if the player is touching the "ground".
-		else if(code == KeyEvent.VK_SPACE && player.getY() == 450){
-			player.setDy(-50);
+		if(code == KeyEvent.VK_SPACE && player.getY() == 450){
+			player.setDy(-30);
 		}
 	}
 	
