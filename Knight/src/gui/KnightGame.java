@@ -18,8 +18,8 @@ import engine.Engine;
 public class KnightGame extends Canvas{
 	private final int FRAMES_PER_SECOND = 60;
 	private final int TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
-	Engine engine;
-	KeyController controller;
+	private Engine engine;
+	private KeyController controller;
 	
 	public KnightGame(){
 		super();
@@ -28,7 +28,7 @@ public class KnightGame extends Canvas{
 		
 		controller = new KeyController();
 		addKeyListener(controller);
-		engine = new Engine();
+		engine = new Engine(controller);
 	}
 	
 	public void run(){

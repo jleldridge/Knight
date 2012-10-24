@@ -1,3 +1,8 @@
+/**
+ * A KeyListener that adds keys to a HashSet for as long as they are down
+ * and does not remove them until it receives a keyReleased event.
+ * Personal note: handling KeyEvents in this way gives VERY promising results.
+ */
 package controller;
 
 import java.awt.event.KeyEvent;
@@ -13,25 +18,14 @@ public class KeyController implements KeyListener {
 		keysDown = new HashSet<Integer>();
 	}
 	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int code = e.getKeyCode();
-		
-		switch(code){
-		case KeyEvent.VK_LEFT:
-		case KeyEvent.VK_RIGHT:
-		case KeyEvent.VK_SPACE:
-			keysDown.add(code);
-		}
-	}
-	
 	/**
 	 * When a key is down it will be added to the keysDown HashSet
 	 * @param e
 	 */
 	@Override
-	public void keyReleased(KeyEvent e) {
-		keysDown.remove(e.getKeyCode());
+	public void keyPressed(KeyEvent e) {
+		int code = e.getKeyCode();
+		keysDown.add(code);
 	}
 	
 	/**
@@ -39,8 +33,16 @@ public class KeyController implements KeyListener {
 	 * @param e
 	 */
 	@Override
+	public void keyReleased(KeyEvent e) {
+		keysDown.remove(e.getKeyCode());
+	}
+	
+	@Override
 	public void keyTyped(KeyEvent e) {
 		//not used
 	}
-
+	
+	public HashSet<Integer> getKeysDown(){
+		return keysDown;
+	}
 }

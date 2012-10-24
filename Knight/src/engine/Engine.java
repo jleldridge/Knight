@@ -3,46 +3,38 @@ package engine;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import controller.KeyController;
+
 import model.Player;
 
 public class Engine {
 	final int GRAVITY = 2;
+	KeyController controller;
 	private Player player;
 	
-	public Engine(){
+	public Engine(KeyController controller){
+		this.controller = controller;
 		player = new Player(100, 450);
 	}
 	
-	public void keyPressed(KeyEvent e){
-		//figure out which key is pressed
-		int code = e.getKeyCode();
-		
-		//modify the player's state based on which key was pressed
-		if(code == KeyEvent.VK_LEFT){
-			player.setDx(-10);
-		}
-		else if(code == KeyEvent.VK_RIGHT){
-			player.setDx(10);
-		}
-		//space key is a jump, so spike player's Dy to negative for one iteration
-		//but only if the player is touching the "ground".
-		if(code == KeyEvent.VK_SPACE && player.getY() == 450){
-			player.setDy(-30);
-		}
-	}
-	
-	public void keyReleased(KeyEvent e){
-		//figure out which key is released
-		int code = e.getKeyCode();
-		
-		//modify the player's state based on which key was released
-		//in this case only drop speed to zero if the key relevant
-		//to the current dx was released.
-		if(code == KeyEvent.VK_LEFT && player.getDx() < 0){
-			player.setDx(0);
-		}
-		else if(code == KeyEvent.VK_RIGHT && player.getDx() > 0){
-			player.setDx(0);
+	/**
+	 * Checks which keys are down in the controller and sets
+	 * player's state accordingly
+	 */
+	private void processKeys(){
+		for(Integer code : controller.getKeysDown()){
+			//modify the player's state based on which key was pressed
+			if(code == KeyEvent.VK_LEFT){
+				player.setDx(-10);
+			}
+			else if(code == KeyEvent.VK_RIGHT){
+				player.setDx(10);
+			}
+			//space key is a jump, so spike player's Dy to negative for one iteration
+			//but only if the player is touching the "ground".
+			if(code == KeyEvent.VK_SPACE && player.getY() == 450){
+				player.setDy(-30);
+			}
 		}
 	}
 	
@@ -50,6 +42,9 @@ public class Engine {
 	//center of the screen and the background moves based on the player's
 	//traversal through the game space, so a game space model will be needed.
 	public void update(){
+		//change the player's state based on which keys are down
+		processKeys();
+		
 		//change the horizontal position of the player based on their current dx.
 		player.setX(player.getX() + player.getDx());
 		//change the player's vertical position based on dy.
@@ -61,6 +56,9 @@ public class Engine {
 			player.setDy(0);
 			player.setY(450);
 		}
+		
+		//reset appropriate states changed by processKeys()
+		player.setDx(0);
 	}
 	
 	public void render(Graphics g){
