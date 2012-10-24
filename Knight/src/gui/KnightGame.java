@@ -1,3 +1,7 @@
+/**
+ * KnightGame is Canvas subclass that serves as both the surface to draw to
+ * and the container for the main game loop.
+ */
 package gui;
 
 import java.awt.Canvas;
@@ -7,19 +11,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
+import controller.KeyController;
+
 import engine.Engine;
 
-public class KnightGame extends Canvas implements KeyListener{
+public class KnightGame extends Canvas{
 	private final int FRAMES_PER_SECOND = 60;
 	private final int TIME_PER_FRAME = 1000/FRAMES_PER_SECOND;
 	Engine engine;
+	KeyController controller;
 	
 	public KnightGame(){
 		super();
-		addKeyListener(this);
 		setSize(800, 600);
 		setIgnoreRepaint(true);
 		
+		controller = new KeyController();
+		addKeyListener(controller);
 		engine = new Engine();
 	}
 	
@@ -55,20 +63,5 @@ public class KnightGame extends Canvas implements KeyListener{
 				}
 			}
 		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		engine.keyPressed(e);
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		engine.keyReleased(e);
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		//probably won't be used
 	}
 }
