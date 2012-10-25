@@ -22,19 +22,22 @@ public class Engine {
 	 * player's state accordingly
 	 */
 	private void processKeys(){
-		for(Integer code : controller.getKeysDown()){
-			//modify the player's state based on which key was pressed
-			if(code == KeyEvent.VK_LEFT){
-				player.setDx(-10);
-			}
-			else if(code == KeyEvent.VK_RIGHT){
-				player.setDx(10);
-			}
-			//space key is a jump, so spike player's Dy to negative for one iteration
-			//but only if the player is touching the "ground".
-			if(code == KeyEvent.VK_SPACE && player.getY() == 450){
-				player.setDy(-30);
-			}
+		int code = -1;
+		if(!controller.getKeysDown().isEmpty()){
+			code = controller.getKeysDown().peek();
+		}
+		//modify the player's state based on which key was pressed
+		if(code == KeyEvent.VK_LEFT){
+			player.setDx(-10);
+		}
+		else if(code == KeyEvent.VK_RIGHT){
+			player.setDx(10);
+		}			
+			
+		//space key is a jump, so spike player's Dy to negative for one iteration
+		//but only if the player is touching the "ground".
+		if(controller.getJump() && player.getY() == 450){
+			player.setDy(-30);
 		}
 	}
 	

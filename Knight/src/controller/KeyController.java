@@ -7,15 +7,16 @@ package controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.HashSet;
+import java.util.Stack;
 
 public class KeyController implements KeyListener {
 	//hash set to hold the int values of any keys that are currently
 	//down and are used by the game.
-	private HashSet<Integer> keysDown;
+	private Stack<Integer> keysDown;
+	private boolean jump;
 	
 	public KeyController(){
-		keysDown = new HashSet<Integer>();
+		keysDown = new Stack<Integer>();
 	}
 	
 	/**
@@ -25,7 +26,12 @@ public class KeyController implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
-		keysDown.add(code);
+		if(code == KeyEvent.VK_SPACE){
+			jump = true;
+		}
+		else if(!keysDown.contains(code)){
+			keysDown.push(code);
+		}
 	}
 	
 	/**
@@ -34,7 +40,14 @@ public class KeyController implements KeyListener {
 	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
-		keysDown.remove(e.getKeyCode());
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			jump = false;
+		}
+		else{
+			//need to use Integer.valueOf so that the stack.remove(object)
+			//method is used instead of the stack.remove(index) method
+			keysDown.remove(Integer.valueOf(e.getKeyCode()));
+		}
 	}
 	
 	@Override
@@ -42,7 +55,11 @@ public class KeyController implements KeyListener {
 		//not used
 	}
 	
-	public HashSet<Integer> getKeysDown(){
+	public Stack<Integer> getKeysDown(){
 		return keysDown;
+	}
+	
+	public boolean getJump(){
+		return jump;
 	}
 }
