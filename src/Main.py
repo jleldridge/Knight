@@ -2,34 +2,49 @@ import pygame, sys
 import Player
 from pygame.locals import *
 
-def handle_events(events):
+def handle_events(events, keys_down):
     for event in events:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
         if event.type == KEYDOWN:
             if event.key == K_LEFT or event.key == ord('a'):
-                pass
+                keys_down['left'] = True
+                keys_down['right'] = False
             if event.key == K_RIGHT or event.key == ord('d'):
-                pass
+                keys_down['right'] = True
+                keys_down['left'] = False
             if event.key == K_UP or event.key == ord('w'):
-                pass
+                keys_down['up'] = True
+                keys_down['down'] = False
             if event.key == K_DOWN or event.key == ord('s'):
-                pass
+                keys_down['down'] = True
+                keys_down['up'] = False
         if event.type == KEYUP:
             if event.key == K_LEFT or event.key == ord('a'):
-                pass
+                keys_down['left'] = False
             if event.key == K_RIGHT or event.key == ord('d'):
-                pass
+                keys_down['right'] = False
             if event.key == K_UP or event.key == ord('w'):
-                pass
+                keys_down['up'] = False
             if event.key == K_DOWN or event.key == ord('s'):
-                pass
+                keys_down['down'] = False
 
-def draw(main_window, objects):
+def update_game(player, game_objects, keys_down):
+    # move player
+    if keys_down['left']:
+        player.rect.left -= player.x_speed
+    if keys_down['right']:
+        player.rect.left += player.x_speed
+    if keys_down['up']:
+        player.rect.top -= player.y_speed
+    if keys_down['down']:
+        player.rect.top += player.y_speed
+
+def draw(main_window, game_objects):
     BLACK = (0, 0, 0)
     main_window.fill(BLACK)
-    for o in objects:
+    for o in game_objects:
         main_window.blit(o.image, o.rect)
 
 def main():
@@ -37,6 +52,7 @@ def main():
     WINDOW_HEIGHT = 600
     
     game_objects = []
+    keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
     
     player = Player.Player()
     player.rect.x = 800/2
@@ -54,8 +70,10 @@ def main():
     # main loop
     while True:
         # handle events
-        handle_events(pygame.event.get())
+        handle_events(pygame.event.get(), keys_down)
         
+        # update the game
+        update_game(player, game_objects, keys_down)
         # draw game objects
         draw(main_window, game_objects)
         

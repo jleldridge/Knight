@@ -12,3 +12,6 @@ class Player(pygame.sprite.Sprite):
         
         # get a bounding rectangle of the image
         self.rect = self.image.get_rect()
+        
+        self.x_speed = 5
+        self.y_speed = 2
