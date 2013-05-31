@@ -45,16 +45,19 @@ def update_game(player, game_objects, keys_down):
     if keys_down['down']:
         player.rect.top += player.y_speed
 
-def draw(main_window, player, game_objects, map):
+def draw(main_window, player, game_objects, map, tileset):
     BLACK = (0, 0, 0)
     main_window.fill(BLACK)
     
-    # temporary tileset
-    tileset = Image_Utils.load_tileset("Castle.png", 512, 512, 32, 32)
-    
-    # draw the part of map that's around the player
+    # find the player's map position
     player_map_x = player.rect.center[0]/MAP_TILE_SIZE
     player_map_y = player.rect.center[1]/MAP_TILE_SIZE
+    
+    # draw the necessary part of the map
+    map_subimage = pygame.Surface((1024, 1024))
+    for i in range(1024/32):
+        for j in range(1024/32):
+            map_subimage.blit(tileset[map[i][j], )
 
 def main():
     game_objects = []
@@ -80,6 +83,9 @@ def main():
         for j in range(200):
             row.append(30)
         map.append(row)
+    
+    # temporary tileset
+    tileset = Image_Utils.load_tileset("Castle.png", 512, 512, 32, 32)
             
     # main loop
     while True:
@@ -89,7 +95,7 @@ def main():
         # update the game
         update_game(player, game_objects, keys_down)
         # draw game objects
-        draw(main_window, player, game_objects, map)
+        draw(main_window, player, game_objects, map, tileset)
         
         pygame.display.update()
         main_clock.tick(60)
