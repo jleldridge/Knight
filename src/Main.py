@@ -1,6 +1,10 @@
 import pygame, sys
-import Player
+import Player, Image_Utils
 from pygame.locals import *
+
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+MAP_TILE_SIZE = 32
 
 def handle_events(events, keys_down):
     for event in events:
@@ -41,16 +45,18 @@ def update_game(player, game_objects, keys_down):
     if keys_down['down']:
         player.rect.top += player.y_speed
 
-def draw(main_window, game_objects):
+def draw(main_window, player, game_objects, map):
     BLACK = (0, 0, 0)
     main_window.fill(BLACK)
-    for o in game_objects:
-        main_window.blit(o.image, o.rect)
+    
+    # temporary tileset
+    tileset = Image_Utils.load_tileset("Castle.png", 512, 512, 32, 32)
+    
+    # draw the part of map that's around the player
+    player_map_x = player.rect.center[0]/MAP_TILE_SIZE
+    player_map_y = player.rect.center[1]/MAP_TILE_SIZE
 
 def main():
-    WINDOW_WIDTH = 800
-    WINDOW_HEIGHT = 600
-    
     game_objects = []
     keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
     
@@ -67,6 +73,14 @@ def main():
     main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
     pygame.display.set_caption("Knight")
     
+    # temporary map
+    map = []
+    for i in range(200):
+        row = []
+        for j in range(200):
+            row.append(30)
+        map.append(row)
+            
     # main loop
     while True:
         # handle events
@@ -75,7 +89,7 @@ def main():
         # update the game
         update_game(player, game_objects, keys_down)
         # draw game objects
-        draw(main_window, game_objects)
+        draw(main_window, player, game_objects, map)
         
         pygame.display.update()
         main_clock.tick(60)
