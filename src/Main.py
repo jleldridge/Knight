@@ -50,18 +50,22 @@ def draw(main_window, player, game_objects, map, tileset):
     main_window.fill(BLACK)
     
     # find the player's map position
-    player_map_x = player.rect.center[0]/MAP_TILE_SIZE
-    player_map_y = player.rect.center[1]/MAP_TILE_SIZE
+    player_map_x = int(player.rect.centerx/MAP_TILE_SIZE)
+    player_map_y = int(player.rect.centery/MAP_TILE_SIZE)
     
     # draw the necessary part of the map
     map_subimage = pygame.Surface((1024, 1024))
-    for i in range(1024/32):
-        for j in range(1024/32):
-            map_subimage.blit(tileset[map[player_map_y-(player_map_y-i)]
-                [player_map_x-(player_map_x-j)], (32*i, 32*j)
+    for i in range(int(1024/32)):
+        for j in range(int(1024/32)):
+            map_row = player_map_y-(player_map_y-i)
+            map_col = player_map_x-(player_map_x-j)
+            if ((map_row >= 0) and (map_col >= 0) and (map_row < len(map)) and 
+                (map_col < len(map[0]))):
+                map_subimage.blit(tileset[map[map_row][map_col]], (32*i, 32*j))
     
     # draw the map to the screen
-    #main_window.blit(map_subimage, (, 1024))
+    main_window.blit(map_subimage, (player.rect.centerx-(WINDOW_WIDTH/2), 
+        player.rect.centery-(WINDOW_HEIGHT/2)))
 
 def main():
     game_objects = []
@@ -83,14 +87,16 @@ def main():
     
     # temporary map
     map = []
-    for i in range(200):
+    counter = 0
+    for i in range(16):
         row = []
-        for j in range(200):
-            row.append(30)
+        for j in range(16):
+            row.append(counter)
+            counter += 1
         map.append(row)
     
     # temporary tileset
-    tileset = Image_Utils.load_tileset("Castle.png", 512, 512, 32, 32)
+    tileset = Image_Utils.load_tileset("src/Castle.png", 512, 512, 32, 32)
             
     # main loop
     while True:
