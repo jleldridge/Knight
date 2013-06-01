@@ -58,11 +58,10 @@ def draw(main_window, player, game_objects, map, tileset):
     for i in range(1024/32):
         for j in range(1024/32):
             map_subimage.blit(tileset[map[player_map_y-(player_map_y-i)]
-                [player_map_x-(player_map_x-j)],
-                (32*i, 32*j, MAP_TILE_SIZE, MAP_TILE_SIZE))
+                [player_map_x-(player_map_x-j)], (32*i, 32*j)
     
     # draw the map to the screen
-    main_window.blit(map_subimage, )
+    #main_window.blit(map_subimage, (, 1024))
 
 def main():
     game_objects = []
@@ -72,6 +71,7 @@ def main():
     player.rect.x = 800/2
     player.rect.y = 600/2
     game_objects.append(player)
+    #print(player.rect)
     
     # set up the game
     pygame.init()
