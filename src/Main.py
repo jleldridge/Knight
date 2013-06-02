@@ -53,30 +53,27 @@ def draw(main_window, player, game_objects, map, tileset):
     BLACK = (0, 0, 0)
     main_window.fill(BLACK)
     
-    # find the player's map position
+    # find which tile of the map the player is on
     player_map_x = int(player.rect.centerx/MAP_TILE_SIZE)
     player_map_y = int(player.rect.centery/MAP_TILE_SIZE)
     
+    # draw the whole map
+    map_width = len(map) * 32
+    map_height = len(map[0]) * 32
+    map_image = pygame.Surface((map_width, map_height))
+    for i in range(16):
+        for j in range(16):
+            map_image.blit(tileset[map[i][j]], (j*32, i*32))
+    
     # draw the necessary part of the map
-    # best idea might just be to scrap this whole loop and try again.
-    map_subimage = pygame.Surface((1024, 1024))
-    for i in range(int(1024/32)):
-        for j in range(int(1024/32)):
-            # these lines are definitely wrong, just uses -i and -j every time
-            map_row = player_map_y-(16-i)
-            map_col = player_map_x-(16-j)
-            if ((map_row >= 0) and (map_col >= 0) and (map_row < len(map)) and 
-                (map_col < len(map[0]))):
-                map_subimage.blit(tileset[map[map_row][map_col]], (32*i, 32*j))
+    # map_subimage = pygame.Surface((1024, 1024))
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
-    # draw the player to the map_subimage
-    #map_subimage.blit(player.image, (512-int(player.width/2), 512-int(player.height/2)))
-    # draw the map to the screen ***I think the problem is with this line***
-    main_window.blit(map_subimage, ((screen_centerx-512), (screen_centery-512)))
-    #main_window.blit(map_subimage, (player.rect.centerx-(WINDOW_WIDTH/2), 
-    #    player.rect.centery-(WINDOW_HEIGHT/2)))
+    
+    #draw the map to the screen
+    main_window.blit(map_image, (screen_centerx-player.rect.centerx, 
+        screen_centery-player.rect.centery))
     
     # draw the player at the center of the screen
     main_window.blit(player.image, (screen_centerx-int(player.width/2), 
@@ -87,8 +84,8 @@ def main():
     keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
     
     player = Player.Player()
-    player.rect.x = 0
-    player.rect.y = 0
+    player.rect.centerx = 0
+    player.rect.centery = 0
     game_objects.append(player)
     
     # set up the game
@@ -107,7 +104,6 @@ def main():
         for j in range(16):
             row.append(counter)
             counter += 1
-            if counter > 255: counter = 0
         map.append(row)
     
     # temporary tileset

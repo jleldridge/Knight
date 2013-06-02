@@ -7,9 +7,9 @@ def load_tileset(file, image_width, image_height, tile_width, tile_height):
     num_tiles_x = int(image_width/tile_width)
     num_tiles_y = int(image_height/tile_height)
     
-    for i in range(num_tiles_x):
-        for j in range(num_tiles_y):
-            rect = (i*tile_width, j*tile_height, tile_width, tile_height)
+    for i in range(num_tiles_y):
+        for j in range(num_tiles_x):
+            rect = (j*tile_width, i*tile_height, tile_width, tile_height)
             tileset.append(image.subsurface(rect))
     
     return tileset
