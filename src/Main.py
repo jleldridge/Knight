@@ -61,12 +61,15 @@ def draw(main_window, player, game_objects, map, tileset):
     map_width = len(map) * 32
     map_height = len(map[0]) * 32
     map_image = pygame.Surface((map_width, map_height))
-    for i in range(16):
-        for j in range(16):
+    for i in range(len(map)):
+        for j in range(len(map[0])):
             map_image.blit(tileset[map[i][j]], (j*32, i*32))
     
     # draw the necessary part of the map
-    # map_subimage = pygame.Surface((1024, 1024))
+    map_subimage = pygame.Surface((1024, 1024))
+    for i in range(32):
+        for j in range(32):
+            pass
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
@@ -102,7 +105,7 @@ def main():
     for i in range(16):
         row = []
         for j in range(16):
-            row.append(counter)
+            row.append(183)
             counter += 1
         map.append(row)
     
