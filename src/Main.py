@@ -38,12 +38,16 @@ def update_game(player, game_objects, keys_down):
     # move player
     if keys_down['left']:
         player.rect.left -= player.x_speed
+        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['right']:
         player.rect.left += player.x_speed
+        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['up']:
         player.rect.top -= player.y_speed
+        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['down']:
         player.rect.top += player.y_speed
+        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
 
 def draw(main_window, player, game_objects, map, tileset):
     BLACK = (0, 0, 0)
@@ -54,28 +58,38 @@ def draw(main_window, player, game_objects, map, tileset):
     player_map_y = int(player.rect.centery/MAP_TILE_SIZE)
     
     # draw the necessary part of the map
+    # best idea might just be to scrap this whole loop and try again.
     map_subimage = pygame.Surface((1024, 1024))
     for i in range(int(1024/32)):
         for j in range(int(1024/32)):
-            map_row = player_map_y-(player_map_y-i)
-            map_col = player_map_x-(player_map_x-j)
+            # these lines are definitely wrong, just uses -i and -j every time
+            map_row = player_map_y-(16-i)
+            map_col = player_map_x-(16-j)
             if ((map_row >= 0) and (map_col >= 0) and (map_row < len(map)) and 
                 (map_col < len(map[0]))):
                 map_subimage.blit(tileset[map[map_row][map_col]], (32*i, 32*j))
     
-    # draw the map to the screen
-    main_window.blit(map_subimage, (player.rect.centerx-(WINDOW_WIDTH/2), 
-        player.rect.centery-(WINDOW_HEIGHT/2)))
+    screen_centerx = int(WINDOW_WIDTH/2)
+    screen_centery = int(WINDOW_HEIGHT/2)
+    # draw the player to the map_subimage
+    #map_subimage.blit(player.image, (512-int(player.width/2), 512-int(player.height/2)))
+    # draw the map to the screen ***I think the problem is with this line***
+    main_window.blit(map_subimage, ((screen_centerx-512), (screen_centery-512)))
+    #main_window.blit(map_subimage, (player.rect.centerx-(WINDOW_WIDTH/2), 
+    #    player.rect.centery-(WINDOW_HEIGHT/2)))
+    
+    # draw the player at the center of the screen
+    main_window.blit(player.image, (screen_centerx-int(player.width/2), 
+        screen_centery-int(player.height/2)))
 
 def main():
     game_objects = []
     keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
     
     player = Player.Player()
-    player.rect.x = 800/2
-    player.rect.y = 600/2
+    player.rect.x = 0
+    player.rect.y = 0
     game_objects.append(player)
-    #print(player.rect)
     
     # set up the game
     pygame.init()
@@ -93,6 +107,7 @@ def main():
         for j in range(16):
             row.append(counter)
             counter += 1
+            if counter > 255: counter = 0
         map.append(row)
     
     # temporary tileset
