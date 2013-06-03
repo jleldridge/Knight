@@ -38,19 +38,16 @@ def update_game(player, game_objects, keys_down):
     # move player
     if keys_down['left']:
         player.rect.left -= player.x_speed
-        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['right']:
         player.rect.left += player.x_speed
-        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['up']:
         player.rect.top -= player.y_speed
-        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
     if keys_down['down']:
         player.rect.top += player.y_speed
-        print("x: ", player.rect.centerx, " y: ", player.rect.centery)
 
 def draw(main_window, player, game_objects, map, tileset):
     BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
     main_window.fill(BLACK)
     
     # find which tile of the map the player is on
@@ -96,9 +93,13 @@ def draw(main_window, player, game_objects, map, tileset):
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
+    player_x_offset = player.rect.centerx-(player_map_x*32)
+    player_y_offset = player.rect.centery-(player_map_y*32)
     
     # draw the map_subimage to the screen
-    main_window.blit(submap_image, (screen_centerx-512, screen_centery-512))
+    # maybe can modify this to take small player offset into account
+    main_window.blit(submap_image, (screen_centerx-512-player_x_offset,
+        screen_centery-512-player_y_offset))
     # main_window.blit(submap_image, (screen_centerx-player.rect.centerx,
         # screen_centery-player.rect.centery))
     
@@ -108,6 +109,17 @@ def draw(main_window, player, game_objects, map, tileset):
     # draw the player at the center of the screen
     main_window.blit(player.image, (screen_centerx-int(player.width/2), 
         screen_centery-int(player.height/2)))
+    
+    # debug player x and y coordinates
+    font = pygame.font.Font(None, 30)
+    xstring = "x: " + str(player.rect.centerx)
+    ystring = "y: " + str(player.rect.centery)
+    pos_text = font.render(xstring + "   " + ystring, False, WHITE)
+    main_window.blit(pos_text, (10, 10))
+    offset_string = ("x offset: " + str(player_x_offset) + "   y offset: " + 
+        str(player_y_offset))
+    offset_text = font.render(offset_string, False, WHITE)
+    main_window.blit(offset_text, (10, 30))
 
 def main():
     game_objects = []
