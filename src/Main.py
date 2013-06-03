@@ -58,23 +58,39 @@ def draw(main_window, player, game_objects, map, tileset):
     player_map_y = int(player.rect.centery/MAP_TILE_SIZE)
     
     # draw the whole map
-    map_width = len(map) * 32
-    map_height = len(map[0]) * 32
-    map_image = pygame.Surface((map_width, map_height))
-    for i in range(len(map)):
-        for j in range(len(map[0])):
+    map_image = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+    start_tilex = math.floor(
+        ((len(map[0])*32)-player.rect.centerx-(WINDOW_WIDTH/2))/32
+    )
+    start_tiley = math.floor(
+        ((len(map)*32)-player.rect.centery-(WINDOW_HEIGHT/2))/32
+    )
+    
+    for i in range(start_tiley, start_tiley+math.ceil(WINDOW_WIDTH/32)+1):
+        for j in range(start_tilex, start_tilex+math.ceil(WINDOW_HEIGHT/32)+1):
+            # here's where it gets tricky, i and j work as map coordinates to
+            # find the proper tile, now just need to figure out where on the
+            # image we are drawing to render the tile.
             map_image.blit(tileset[map[i][j]], (j*32, i*32))
     
     # draw the necessary part of the map
-    map_subimage = pygame.Surface((1024, 1024))
-    for i in range(32):
-        for j in range(32):
-            pass
+    # map_subimage = pygame.Surface((1024, 1024))
+    # for i in range(32):
+        # for j in range(32):
+            # tilex = player_map_x - 16 + j
+            # tiley = player_map_y - 16 + i
+            # if ((tilex >= 0) and (tiley >= 0) and (tilex < len(map)) and 
+                # (tiley < len(map[0]))):
+                # map_subimage.blit(tileset[map[tiley][tilex]], (j*32, i*32))
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
     
-    #draw the map to the screen
+    # draw the map_subimage to the screen
+    # main_window.blit(map_subimage, (screen_centerx-player.rect.centerx,
+        # screen_centery-player.rect.centery))
+    
+    # draw the map to the screen
     main_window.blit(map_image, (screen_centerx-player.rect.centerx, 
         screen_centery-player.rect.centery))
     
@@ -102,9 +118,9 @@ def main():
     # temporary map
     map = []
     counter = 0
-    for i in range(16):
+    for i in range(200):
         row = []
-        for j in range(16):
+        for j in range(200):
             row.append(183)
             counter += 1
         map.append(row)
