@@ -1,3 +1,5 @@
+import pygame
+from pygame.locals import *
 import Tilesets
 
 class Knight_Game_Object:
@@ -12,7 +14,7 @@ class Knight_Game_Object:
 # definitions of game objects
 
 # Pyramid of crates
-image = Pygame.Surface((64, 64))
+image = pygame.Surface((64, 64))
 image.blit(Tilesets.castle[231], (0, 0))
 image.blit(Tilesets.castle[232], (32, 0))
 image.blit(Tilesets.castle[247], (0, 32))

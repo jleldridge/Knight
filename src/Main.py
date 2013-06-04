@@ -86,15 +86,17 @@ def draw(main_window, player, game_objects, map):
             submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
             
     # if a static game object falls within the submap, draw it
-    # for object in map.static_objects:
-        # object_x = int(object.rect.centerx/MAP_TILE_SIZE)
-        # object_y = int(object.rect.centery/MAP_TILE_SIZE)
-        # if ((object_x > player_map_x-16) and (object_y > player_map_y-16) and
-            # (object_x <= player_map_x+16) and (object_y > player_map_y+16)):
+    for object in map.static_objects:
+        object_x = int(object[1][0]/MAP_TILE_SIZE)
+        object_y = int(object[1][1]/MAP_TILE_SIZE)
+        
+        if ((object_x > player_map_x-16) and (object_y > player_map_y-16) and
+            (object_x <= player_map_x+16) and (object_y <= player_map_y+16)):
             # draw the object based on its offset from the player
-            # object_x_offset = object.rect.centerx-(object_x*32)
-            # object_y_offset = object.rect.centery-(object_y*32)
-            # submap_image.blit(object.image, ())
+            object_x_offset = object[1][0]-player.rect.centerx
+            object_y_offset = object[1][1]-player.rect.centery
+            submap_image.blit(object[0].image, 
+                (512+object_x_offset, 512+object_y_offset))
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
