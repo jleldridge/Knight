@@ -15,6 +15,9 @@ pygame.display.set_caption("Knight")
 
 import Player, Image_Utils, Tilesets, Maps
 
+# create the submap_image here instead of in draw() for speed
+submap_image = pygame.Surface((1024, 1024)).convert()
+
 def handle_events(events, keys_down):
     for event in events:
         if event.type == QUIT:
@@ -76,14 +79,17 @@ def draw(main_window, player, game_objects, map):
                 (map_col<len(map.layout[0]))):
                 temp_row.append(map.layout[map_row][map_col])
             else:
-                temp_row.append(0)
+                temp_row.append(-1)
         submap.append(temp_row)
             
     # draw the necessary part of the map
-    submap_image = pygame.Surface((1024, 1024))
+    submap_image.fill(BLACK)
     for i in range(32):
         for j in range(32):
-            submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
+            if submap[i][j] < 0:
+                submap_image.blit(map.blank_tile, (j*32, i*32))
+            else:
+                submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
             
     # if a static game object falls within the submap, draw it
     for object in map.static_objects:
@@ -93,8 +99,8 @@ def draw(main_window, player, game_objects, map):
         if ((object_x > player_map_x-16) and (object_y > player_map_y-16) and
             (object_x <= player_map_x+16) and (object_y <= player_map_y+16)):
             # draw the object based on its offset from the player
-            object_x_offset = object[1][0]-player.rect.centerx
-            object_y_offset = object[1][1]-player.rect.centery
+            object_x_offset = object[1][0]-player.rect.centerx+player_x_offset
+            object_y_offset = object[1][1]-player.rect.centery+player_y_offset
             submap_image.blit(object[0].image, 
                 (512+object_x_offset, 512+object_y_offset))
     
