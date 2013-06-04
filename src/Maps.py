@@ -51,7 +51,9 @@ layout = [
     [ 38,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  41]
 ]
 static_objects = [
-    [pyramid_of_crates, (50, 50)]
+    Pyramid_of_crates(50, 50),
+    Pyramid_of_crates(80, 90),
+    Pyramid_of_crates(128, 256)
 ]
 map01 = Map(tileset, layout, static_objects)
-map01.blank_tile = pygame.Surface((32, 32))
+map01.blank_tile = pygame.Surface((32, 32)).convert()
