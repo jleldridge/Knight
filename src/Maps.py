@@ -63,12 +63,12 @@ layout = [
     [ 38,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  41]
 ]
 static_objects = [
-    Bookshelf(32, 32),
-    Bookshelf(97, 32),
-    Bookshelf(161, 32),
-    Bookshelf(225, 32),
-    Bookshelf(289, 32),
-    Bookshelf(353, 32),
+    Bookshelf(72, 32),
+    Bookshelf(137, 32),
+    Bookshelf(201, 32),
+    Bookshelf(265, 32),
+    Bookshelf(329, 32),
+    Bookshelf(393, 32),
     Pyramid_of_crates(80, 90),
     Pyramid_of_crates(128, 256),
     Pyramid_of_crates(256, 156),
