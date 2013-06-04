@@ -51,23 +51,23 @@ def update_game(player, map, keys_down):
     if keys_down['left']:
         player.rect.left -= player.x_speed
         for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.rect):
-                player.rect.left = object.rect.right
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                player.rect.left = object.solid_rect.right
     if keys_down['right']:
         player.rect.left += player.x_speed
         for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.rect):
-                player.rect.right = object.rect.left
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                player.rect.right = object.solid_rect.left
     if keys_down['up']:
         player.rect.top -= player.y_speed
         for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.rect):
-                player.rect.top = object.rect.bottom
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                player.rect.top = object.solid_rect.bottom
     if keys_down['down']:
         player.rect.top += player.y_speed
         for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.rect):
-                player.rect.bottom = object.rect.top
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                player.rect.bottom = object.solid_rect.top
 
 def draw(main_window, player, map):
     BLACK = (0, 0, 0)
