@@ -46,18 +46,30 @@ def handle_events(events, keys_down):
             if event.key == K_DOWN or event.key == ord('s'):
                 keys_down['down'] = False
 
-def update_game(player, game_objects, keys_down):
-    # move player
+def update_game(player, map, keys_down):
+    # move player and check for collisions
     if keys_down['left']:
         player.rect.left -= player.x_speed
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.rect):
+                player.rect.left = object.rect.right
     if keys_down['right']:
         player.rect.left += player.x_speed
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.rect):
+                player.rect.right = object.rect.left
     if keys_down['up']:
         player.rect.top -= player.y_speed
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.rect):
+                player.rect.top = object.rect.bottom
     if keys_down['down']:
         player.rect.top += player.y_speed
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.rect):
+                player.rect.bottom = object.rect.top
 
-def draw(main_window, player, game_objects, map):
+def draw(main_window, player, map):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     main_window.fill(BLACK)
@@ -96,15 +108,17 @@ def draw(main_window, player, game_objects, map):
     # REMEMBER: eventually want to change exactly what x, y coordinates to draw
     # from based on the object's collision rectangle
     for object in map.static_objects:
-        object_tile_x = int(object.x/MAP_TILE_SIZE)
-        object_tile_y = int(object.y/MAP_TILE_SIZE)
+        object_tile_x = int(object.rect.centerx/MAP_TILE_SIZE)
+        object_tile_y = int(object.rect.centery/MAP_TILE_SIZE)
         
-        if ((object_tile_x > player_map_x-16) and (object_tile_y > player_map_y-16) and
-            (object_tile_x <= player_map_x+16) and (object_tile_y <= player_map_y+16) and
+        if ((object_tile_x > player_map_x-16) and 
+            (object_tile_y > player_map_y-16) and
+            (object_tile_x <= player_map_x+16) and 
+            (object_tile_y <= player_map_y+16) and
             (object.background)):
             # draw the object based on its offset from the player
-            object_x_offset = object.x-player.rect.centerx+player_x_offset
-            object_y_offset = object.y-player.rect.centery+player_y_offset
+            object_x_offset = object.rect.centerx-int(object.rect.width/2)-player.rect.centerx+player_x_offset
+            object_y_offset = object.rect.centery-int(object.rect.height/2)-player.rect.centery+player_y_offset
             submap_image.blit(object.image, 
                 (512+object_x_offset, 512+object_y_offset))
     
@@ -117,15 +131,17 @@ def draw(main_window, player, game_objects, map):
     # REMEMBER: eventually want to change exactly what x, y coordinates to draw
     # from based on the object's collision rectangle
     for object in map.static_objects:
-        object_tile_x = int(object.x/MAP_TILE_SIZE)
-        object_tile_y = int(object.y/MAP_TILE_SIZE)
+        object_tile_x = int(object.rect.centerx/MAP_TILE_SIZE)
+        object_tile_y = int(object.rect.centery/MAP_TILE_SIZE)
         
-        if ((object_tile_x > player_map_x-16) and (object_tile_y > player_map_y-16) and
-            (object_tile_x <= player_map_x+16) and (object_tile_y <= player_map_y+16) and
+        if ((object_tile_x > player_map_x-16) and 
+            (object_tile_y > player_map_y-16) and
+            (object_tile_x <= player_map_x+16) and 
+            (object_tile_y <= player_map_y+16) and
             (not object.background)):
             # draw the object based on its offset from the player
-            object_x_offset = object.x-player.rect.centerx+player_x_offset
-            object_y_offset = object.y-player.rect.centery+player_y_offset
+            object_x_offset = object.rect.centerx-int(object.rect.width/2)-player.rect.centerx+player_x_offset
+            object_y_offset = object.rect.centery-int(object.rect.height/2)-player.rect.centery+player_y_offset
             submap_image.blit(object.image, 
                 (512+object_x_offset, 512+object_y_offset))
     
@@ -152,13 +168,11 @@ def draw(main_window, player, game_objects, map):
     # main_window.blit(offset_text, (10, 30))
 
 def main():
-    game_objects = []
     keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
     
     player = Player.Player()
     player.rect.centerx = 0
     player.rect.centery = 0
-    game_objects.append(player)
     
     # temporary map
     map = Maps.map01
@@ -169,11 +183,11 @@ def main():
         handle_events(pygame.event.get(), keys_down)
         
         # update the game
-        update_game(player, game_objects, keys_down)
+        update_game(player, map, keys_down)
         # draw game objects
-        draw(main_window, player, game_objects, map)
+        draw(main_window, player, map)
         
-        pygame.display.update()
+        pygame.display.flip()
         main_clock.tick(60)
 
 if __name__ == '__main__':
