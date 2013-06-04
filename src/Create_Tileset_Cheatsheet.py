@@ -1,3 +1,6 @@
+import pygame, sys
+from pygame.locals import *
+
 def create_tileset_cheatsheet(file, image_width, image_height, tile_width, tile_height):
     pygame.init()
     window = pygame.display.set_mode((200, 200), 0, 32)
