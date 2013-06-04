@@ -3,18 +3,30 @@ from Knight_Game_Objects import *
 
 class Map:
     
-    def __init__(self, tileset, layout, static_objects):
+    def __init__(self, tileset, layout, static_objects=[]):
         self.tileset = tileset
         self.layout = layout
         self.static_objects = static_objects
-
+        self.blank_tile = pygame.Surface((32, 32)).convert()
+        
 # definitions of maps
 
+# castle_tileset_test_map
+layout = []
+counter = 0
+for i in range(16):
+    temp_row = []
+    for j in range(16):
+        temp_row.append(counter)
+        counter += 1
+    layout.append(temp_row)
+
+castle_tileset_test_map = Map(Tilesets.castle, layout)
+
 # map01
-tileset = Tilesets.castle
 layout = [
-    [  6, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165, 164, 165,   9],
-    [ 22, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181, 180, 181,  25],
+    [  6,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   8,   9],
+    [ 22, 166, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 167, 168,  25],
     [ 22, 182, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 184,  25],
     [ 22, 182, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 184,  25],
     [ 22, 182, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 183, 184,  25],
@@ -51,9 +63,19 @@ layout = [
     [ 38,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  40,  41]
 ]
 static_objects = [
-    Pyramid_of_crates(50, 50),
+    Bookshelf(32, 32),
+    Bookshelf(97, 32),
+    Bookshelf(161, 32),
+    Bookshelf(225, 32),
+    Bookshelf(289, 32),
+    Bookshelf(353, 32),
     Pyramid_of_crates(80, 90),
-    Pyramid_of_crates(128, 256)
+    Pyramid_of_crates(128, 256),
+    Pyramid_of_crates(256, 156),
+    Pyramid_of_crates(800, 256),
+    Anvil_01(300, 600),
+    Anvil_01(600, 600),
+    Skeleton(211, 400),
+    Skeleton(311, 402)
 ]
-map01 = Map(tileset, layout, static_objects)
-map01.blank_tile = pygame.Surface((32, 32)).convert()
+map01 = Map(Tilesets.castle, layout, static_objects)

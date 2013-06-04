@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import Tilesets
 
+ALPHA_COLOR = (255, 0, 255)
+
 class Knight_Game_Object:
 
     def __init__(self, image, solid=False, rect = None):
@@ -13,13 +15,44 @@ class Knight_Game_Object:
 
 # definitions of game objects
 
-# Pyramid of crates
+class Anvil_01(Knight_Game_Object):
+    
+    def __init__(self, x, y):
+        image = pygame.Surface((32, 32)).convert()
+        image.fill(ALPHA_COLOR)
+        image.set_colorkey(ALPHA_COLOR)
+        image.blit(Tilesets.castle[133], (0,0))
+        rect = image.get_rect()
+        
+        Knight_Game_Object.__init__(self, image, True, rect)
+        
+        self.x = x
+        self.y = y
+
+        
+class Bookshelf(Knight_Game_Object):
+    
+    def __init__(self, x, y):
+        image = pygame.Surface((64, 64)).convert()
+        image.fill(ALPHA_COLOR)
+        image.set_colorkey(ALPHA_COLOR)
+        image.blit(Tilesets.castle[164], (0, 0))
+        image.blit(Tilesets.castle[165], (32, 0))
+        image.blit(Tilesets.castle[180], (0, 32))
+        image.blit(Tilesets.castle[181], (32, 32))
+        rect = image.get_rect()
+        
+        Knight_Game_Object.__init__(self, image, True, rect)
+        
+        self.x = x
+        self.y = y
+        
 class Pyramid_of_crates(Knight_Game_Object):
 
     def __init__(self, x, y):
         image = pygame.Surface((64, 64)).convert()
-        image.fill((255,255,255))
-        image.set_colorkey((255,255,255))
+        image.fill(ALPHA_COLOR)
+        image.set_colorkey(ALPHA_COLOR)
         image.blit(Tilesets.castle[231], (0, 0))
         image.blit(Tilesets.castle[232], (32, 0))
         image.blit(Tilesets.castle[247], (0, 32))
@@ -30,3 +63,18 @@ class Pyramid_of_crates(Knight_Game_Object):
         
         self.x = x
         self.y = y
+
+class Skeleton(Knight_Game_Object):
+    
+    def __init__(self, x, y):
+        image = pygame.Surface((32, 32)).convert()
+        image.fill(ALPHA_COLOR)
+        image.set_colorkey(ALPHA_COLOR)
+        image.blit(Tilesets.castle[177], (0,0))
+        rect = image.get_rect()
+        
+        Knight_Game_Object.__init__(self, image, False, rect)
+        
+        self.x = x
+        self.y = y
+        

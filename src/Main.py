@@ -97,6 +97,8 @@ def draw(main_window, player, game_objects, map):
         512-int(player.height/2)+player_y_offset))
     
     # if a static game object falls within the submap, draw it
+    # REMEMBER: eventually want to change exactly what x, y coordinates to draw
+    # from based on the object's collision rectangle
     for object in map.static_objects:
         object_tile_x = int(object.x/MAP_TILE_SIZE)
         object_tile_y = int(object.y/MAP_TILE_SIZE)
