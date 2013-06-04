@@ -2,12 +2,12 @@ import Tilesets
 
 class Knight_Game_Object:
 
-    def __init__(self, image, solid=False, collide_rect = None):
+    def __init__(self, image, solid=False, rect = None):
         self.image = image
         self.rect = rect
         self.solid = solid
         if self.solid:
-            self.collide_rect = collide_rect
+            self.rect = rect
 
 # definitions of game objects
 
