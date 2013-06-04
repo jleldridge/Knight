@@ -1,10 +1,19 @@
 import pygame, sys, math
-import Player, Image_Utils
 from pygame.locals import *
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 MAP_TILE_SIZE = 32
+
+# set up the game
+pygame.init()
+main_clock = pygame.time.Clock()
+
+# create the game window
+main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
+pygame.display.set_caption("Knight")
+
+import Player, Image_Utils, Tilesets, Maps
 
 def handle_events(events, keys_down):
     for event in events:
@@ -45,7 +54,7 @@ def update_game(player, game_objects, keys_down):
     if keys_down['down']:
         player.rect.top += player.y_speed
 
-def draw(main_window, player, game_objects, map, tileset):
+def draw(main_window, player, game_objects, map):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     main_window.fill(BLACK)
@@ -61,9 +70,9 @@ def draw(main_window, player, game_objects, map, tileset):
         for j in range(32):
             map_row = player_map_y-16+i
             map_col = player_map_x-16+j
-            if ((map_row>=0) and (map_col>=0) and (map_row<len(map)) and 
-                (map_col<len(map[0]))):
-                temp_row.append(map[map_row][map_col])
+            if ((map_row>=0) and (map_col>=0) and (map_row<len(map.layout)) and 
+                (map_col<len(map.layout[0]))):
+                temp_row.append(map.layout[map_row][map_col])
             else:
                 temp_row.append(0)
         submap.append(temp_row)
@@ -72,7 +81,7 @@ def draw(main_window, player, game_objects, map, tileset):
     submap_image = pygame.Surface((1024, 1024))
     for i in range(32):
         for j in range(32):
-            submap_image.blit(tileset[submap[i][j]], (j*32, i*32))
+            submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
     
     screen_centerx = int(WINDOW_WIDTH/2)
     screen_centery = int(WINDOW_HEIGHT/2)
@@ -107,26 +116,8 @@ def main():
     player.rect.centery = 0
     game_objects.append(player)
     
-    # set up the game
-    pygame.init()
-    main_clock = pygame.time.Clock()
-    
-    # create the game window
-    main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
-    pygame.display.set_caption("Knight")
-    
     # temporary map
-    map = []
-    counter = 0
-    for i in range(100):
-        temp_row = []
-        for j in range(100):
-            temp_row.append(183)
-            counter += 1
-        map.append(temp_row)
-    
-    # temporary tileset
-    tileset = Image_Utils.load_tileset("src/Castle.png", 512, 512, 32, 32)
+    map = Maps.map01
             
     # main loop
     while True:
@@ -136,7 +127,7 @@ def main():
         # update the game
         update_game(player, game_objects, keys_down)
         # draw game objects
-        draw(main_window, player, game_objects, map, tileset)
+        draw(main_window, player, game_objects, map)
         
         pygame.display.update()
         main_clock.tick(60)

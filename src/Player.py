@@ -7,8 +7,8 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         
         # temporarily make the player a white rectangle image
-        self.width = 5
-        self.height = 5
+        self.width = 10
+        self.height = 20
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill((255, 255, 255))
         
