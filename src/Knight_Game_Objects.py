@@ -6,12 +6,13 @@ ALPHA_COLOR = (255, 0, 255)
 
 class Knight_Game_Object:
 
-    def __init__(self, image, solid=False, rect = None):
+    def __init__(self, image, rect = None, solid=False, background=False):
         self.image = image
         self.rect = rect
         self.solid = solid
         if self.solid:
             self.rect = rect
+        self.background = background
 
 # definitions of game objects
 
@@ -24,7 +25,7 @@ class Anvil_01(Knight_Game_Object):
         image.blit(Tilesets.castle[133], (0,0))
         rect = image.get_rect()
         
-        Knight_Game_Object.__init__(self, image, True, rect)
+        Knight_Game_Object.__init__(self, image, rect, True, False)
         
         self.x = x
         self.y = y
@@ -42,7 +43,7 @@ class Bookshelf(Knight_Game_Object):
         image.blit(Tilesets.castle[181], (32, 32))
         rect = image.get_rect()
         
-        Knight_Game_Object.__init__(self, image, True, rect)
+        Knight_Game_Object.__init__(self, image, rect, True, False)
         
         self.x = x
         self.y = y
@@ -59,7 +60,7 @@ class Pyramid_of_crates(Knight_Game_Object):
         image.blit(Tilesets.castle[248], (32, 32))
         rect = image.get_rect()
         
-        Knight_Game_Object.__init__(self, image, True, rect)
+        Knight_Game_Object.__init__(self, image, rect, True, False)
         
         self.x = x
         self.y = y
@@ -73,7 +74,7 @@ class Skeleton(Knight_Game_Object):
         image.blit(Tilesets.castle[177], (0,0))
         rect = image.get_rect()
         
-        Knight_Game_Object.__init__(self, image, False, rect)
+        Knight_Game_Object.__init__(self, image, rect, True, True)
         
         self.x = x
         self.y = y

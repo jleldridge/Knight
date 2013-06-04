@@ -91,6 +91,23 @@ def draw(main_window, player, game_objects, map):
             else:
                 submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
     
+    # if a static game object falls within the submap and is a background object,
+    # draw it before the player
+    # REMEMBER: eventually want to change exactly what x, y coordinates to draw
+    # from based on the object's collision rectangle
+    for object in map.static_objects:
+        object_tile_x = int(object.x/MAP_TILE_SIZE)
+        object_tile_y = int(object.y/MAP_TILE_SIZE)
+        
+        if ((object_tile_x > player_map_x-16) and (object_tile_y > player_map_y-16) and
+            (object_tile_x <= player_map_x+16) and (object_tile_y <= player_map_y+16) and
+            (object.background)):
+            # draw the object based on its offset from the player
+            object_x_offset = object.x-player.rect.centerx+player_x_offset
+            object_y_offset = object.y-player.rect.centery+player_y_offset
+            submap_image.blit(object.image, 
+                (512+object_x_offset, 512+object_y_offset))
+    
     # draw the player to the submap_image
     submap_image.blit(player.image, 
         (512-int(player.width/2)+player_x_offset, 
@@ -104,7 +121,8 @@ def draw(main_window, player, game_objects, map):
         object_tile_y = int(object.y/MAP_TILE_SIZE)
         
         if ((object_tile_x > player_map_x-16) and (object_tile_y > player_map_y-16) and
-            (object_tile_x <= player_map_x+16) and (object_tile_y <= player_map_y+16)):
+            (object_tile_x <= player_map_x+16) and (object_tile_y <= player_map_y+16) and
+            (not object.background)):
             # draw the object based on its offset from the player
             object_x_offset = object.x-player.rect.centerx+player_x_offset
             object_y_offset = object.y-player.rect.centery+player_y_offset
