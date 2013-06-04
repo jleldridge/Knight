@@ -6,9 +6,6 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         
-        # temporarily make the player a white rectangle image
-        self.width = 21
-        self.height = 40
         self.image = pygame.image.load("src/player.png").convert()
         self.image.set_colorkey((255, 0, 255))
         

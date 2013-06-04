@@ -117,15 +117,28 @@ def draw(main_window, player, map):
             (object_tile_y <= player_map_y+16) and
             (object.background)):
             # draw the object based on its offset from the player
-            object_x_offset = object.rect.centerx-int(object.rect.width/2)-player.rect.centerx+player_x_offset
-            object_y_offset = object.rect.centery-int(object.rect.height/2)-player.rect.centery+player_y_offset
+            object_x_offset = object.rect.left-player.rect.centerx+player_x_offset
+            object_y_offset = object.rect.top-player.rect.centery+player_y_offset
             submap_image.blit(object.image, 
                 (512+object_x_offset, 512+object_y_offset))
     
+    # draw the enemies onto the submap_image
+    for enemy in map.enemies:
+        enemy_tile_x = int(enemy.rect.centerx/MAP_TILE_SIZE)
+        enemy_tile_y = int(enemy.rect.centery/MAP_TILE_SIZE)
+        if ((enemy_tile_x > player_map_x-16) and 
+            (enemy_tile_y > player_map_y-16) and
+            (enemy_tile_x <= player_map_x+16) and 
+            (enemy_tile_y <= player_map_y+16)):
+            enemy_x_offset = enemy.rect.left-player.rect.centerx+player_x_offset
+            enemy_y_offset = enemy.rect.top-player.rect.centery+player_y_offset
+            submap_image.blit(enemy.image, 
+                (512+enemy_x_offset, 512+enemy_y_offset))
+    
     # draw the player to the submap_image
     submap_image.blit(player.image, 
-        (512-int(player.width/2)+player_x_offset, 
-        512-int(player.height/2)+player_y_offset))
+        (512-int(player.rect.width/2)+player_x_offset, 
+        512-int(player.rect.height/2)+player_y_offset))
     
     # if a static game object falls within the submap, draw it
     # REMEMBER: eventually want to change exactly what x, y coordinates to draw
@@ -140,8 +153,8 @@ def draw(main_window, player, map):
             (object_tile_y <= player_map_y+16) and
             (not object.background)):
             # draw the object based on its offset from the player
-            object_x_offset = object.rect.centerx-int(object.rect.width/2)-player.rect.centerx+player_x_offset
-            object_y_offset = object.rect.centery-int(object.rect.height/2)-player.rect.centery+player_y_offset
+            object_x_offset = object.rect.left-player.rect.centerx+player_x_offset
+            object_y_offset = object.rect.top-player.rect.centery+player_y_offset
             submap_image.blit(object.image, 
                 (512+object_x_offset, 512+object_y_offset))
     
@@ -153,8 +166,8 @@ def draw(main_window, player, map):
         screen_centery-512-player_y_offset))
     
     # draw the player at the center of the screen
-    # main_window.blit(player.image, (screen_centerx-int(player.width/2), 
-        # screen_centery-int(player.height/2)))
+    # main_window.blit(player.image, (screen_centerx-int(player.rect.width/2), 
+        # screen_centery-int(player.rect.height/2)))
     
     # debug player x and y coordinates
     # font = pygame.font.Font(None, 30)
@@ -175,7 +188,7 @@ def main():
     player.rect.centery = 0
     
     # temporary map
-    map = Maps.map01
+    map = Maps.Map01()
             
     # main loop
     while True:
