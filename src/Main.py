@@ -17,35 +17,49 @@ import Player, Image_Utils, Tilesets, Maps
 
 # create the submap_image here instead of in draw() for speed
 submap_image = pygame.Surface((1024, 1024)).convert()
+keys_down = {'left': False, 'right': False, 'up': False, 'down': False}
 
 def handle_events(events, player):
     for event in events:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-        # this method could be dolled up a bit to account for 2 opposite keys
-        # being pressed
-        # check for player statuses that would change movement somehow
-        if (not player.knockback):
-            if event.type == KEYDOWN:
-                if event.key == K_LEFT or event.key == ord('a'):
-                    player.x_speed = 0 - player.max_x_speed
-                if event.key == K_RIGHT or event.key == ord('d'):
-                    player.x_speed = player.max_x_speed
-                if event.key == K_UP or event.key == ord('w'):
-                    player.y_speed = 0 - player.max_y_speed
-                if event.key == K_DOWN or event.key == ord('s'):
-                    player.y_speed = player.max_y_speed
-            if event.type == KEYUP:
-                if event.key == K_LEFT or event.key == ord('a'):
-                    player.x_speed = 0
-                if event.key == K_RIGHT or event.key == ord('d'):
-                    player.x_speed = 0
-                if event.key == K_UP or event.key == ord('w'):
-                    player.y_speed = 0
-                if event.key == K_DOWN or event.key == ord('s'):
-                    player.y_speed = 0
-
+        if event.type == KEYDOWN:
+            if event.key == K_LEFT or event.key == ord('a'):
+                keys_down['left'] = True
+            if event.key == K_RIGHT or event.key == ord('d'):
+                keys_down['right'] = True
+            if event.key == K_UP or event.key == ord('w'):
+                keys_down['up'] = True
+            if event.key == K_DOWN or event.key == ord('s'):
+                keys_down['down'] = True
+        if event.type == KEYUP:
+            if event.key == K_LEFT or event.key == ord('a'):
+                keys_down['left'] = False
+            if event.key == K_RIGHT or event.key == ord('d'):
+                keys_down['right'] = False
+            if event.key == K_UP or event.key == ord('w'):
+                keys_down['up'] = False
+            if event.key == K_DOWN or event.key == ord('s'):
+                keys_down['down'] = False
+        
+    # set player speed based on keys down and status effects
+    if (not player.knockback):
+        # left and right
+        if keys_down['left'] and not keys_down['right']:
+            player.x_speed = 0 - player.max_x_speed
+        elif keys_down['right'] and not keys_down['left']:
+            player.x_speed = player.max_x_speed
+        else:
+            player.x_speed = 0
+        
+        # up and down
+        if keys_down['up'] and not keys_down['down']:
+            player.y_speed = 0-player.max_y_speed
+        elif keys_down['down'] and not keys_down['up']:
+            player.y_speed = player.max_y_speed
+        else:
+            player.y_speed = 0
                 
 def update_game(player, map):
     # move the player based on their speed and check for collisions
