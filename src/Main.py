@@ -82,12 +82,14 @@ def update_game(player, map):
                 player.rect.left = enemy.solid_rect.right
             else:
                 player.rect.right = enemy.solid_rect.left
-    for object in map.static_objects:
-        if object.solid and player.rect.colliderect(object.solid_rect):
-            if player.x_speed < 0:
-                player.rect.left = object.solid_rect.right
-            else:
-                player.rect.right = object.solid_rect.left
+    #only check solid object collisions if the player is moving
+    if(player.x_speed):
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                if player.x_speed < 0:
+                    player.rect.left = object.solid_rect.right
+                else:
+                    player.rect.right = object.solid_rect.left
 
     # move in y direction, checking for collisions
     player.rect.top += player.y_speed
@@ -107,12 +109,14 @@ def update_game(player, map):
                 player.rect.top = enemy.solid_rect.bottom
             else:
                 player.rect.bottom = enemy.solid_rect.top
-    for object in map.static_objects:
-        if object.solid and player.rect.colliderect(object.solid_rect):
-            if player.y_speed < 0:
-                player.rect.top = object.solid_rect.bottom
-            else:
-                player.rect.bottom = object.solid_rect.top
+    #only check solid object collisions if the player is moving
+    if(player.y_speed):
+        for object in map.static_objects:
+            if object.solid and player.rect.colliderect(object.solid_rect):
+                if player.y_speed < 0:
+                    player.rect.top = object.solid_rect.bottom
+                else:
+                    player.rect.bottom = object.solid_rect.top
     
     # reduce the knockback counter if it is still above 0
     if player.knockback:
@@ -216,25 +220,8 @@ def draw(main_window, player, map):
     # draw the map_subimage to the screen
     main_window.blit(submap_image, (screen_centerx-512-player_x_offset,
         screen_centery-512-player_y_offset))
-    
-    # draw the player at the center of the screen
-    # main_window.blit(player.image, (screen_centerx-int(player.rect.width/2), 
-        # screen_centery-int(player.rect.height/2)))
-    
-    # debug player x and y coordinates
-    # font = pygame.font.Font(None, 30)
-    # xstring = "x: " + str(player.rect.centerx)
-    # ystring = "y: " + str(player.rect.centery)
-    # pos_text = font.render(xstring + "   " + ystring, False, WHITE)
-    # main_window.blit(pos_text, (10, 10))
-    # offset_string = ("x offset: " + str(player_x_offset) + "   y offset: " + 
-        # str(player_y_offset))
-    # offset_text = font.render(offset_string, False, WHITE)
-    # main_window.blit(offset_text, (10, 30))
 
 def main():
-    keys_down = {'up': False, 'down': False, 'left': False, 'right': False}
-    
     player = Player.Player()
     player.rect.centerx = 0
     player.rect.centery = 0
