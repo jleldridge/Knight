@@ -46,28 +46,54 @@ def handle_events(events, keys_down):
             if event.key == K_DOWN or event.key == ord('s'):
                 keys_down['down'] = False
 
+                
 def update_game(player, map, keys_down):
     # move player and check for collisions
+    # REMEMBER: when you get to it, let player attack rects hit before probably anything else
     if keys_down['left']:
         player.rect.left -= player.x_speed
+        for enemy in map.enemies:
+            if player.rect.colliderect(enemy.attack_rect):
+                player.health -= enemy.attack_power
+                player.rect.left += enemy.attack_force
+            if enemy.solid and player.rect.colliderect(enemy.solid_rect):
+                player.rect.left = enemy.solid_rect.right
         for object in map.static_objects:
             if object.solid and player.rect.colliderect(object.solid_rect):
                 player.rect.left = object.solid_rect.right
     if keys_down['right']:
         player.rect.left += player.x_speed
+        for enemy in map.enemies:
+            if player.rect.colliderect(enemy.attack_rect):
+                player.health -= enemy.attack_power
+                player.rect.left -= enemy.attack_force
+            if enemy.solid and player.rect.colliderect(enemy.solid_rect):
+                player.rect.right = enemy.solid_rect.left
         for object in map.static_objects:
             if object.solid and player.rect.colliderect(object.solid_rect):
                 player.rect.right = object.solid_rect.left
     if keys_down['up']:
         player.rect.top -= player.y_speed
+        for enemy in map.enemies:
+            if player.rect.colliderect(enemy.attack_rect):
+                player.health -= enemy.attack_power
+                player.rect.top += enemy.attack_force
+            if enemy.solid and player.rect.colliderect(enemy.solid_rect):
+                player.rect.top = enemy.solid_rect.bottom
         for object in map.static_objects:
             if object.solid and player.rect.colliderect(object.solid_rect):
                 player.rect.top = object.solid_rect.bottom
     if keys_down['down']:
         player.rect.top += player.y_speed
+        for enemy in map.enemies:
+            if player.rect.colliderect(enemy.attack_rect):
+                player.health -= enemy.attack_power
+                player.rect.top -= enemy.attack_force
+            if enemy.solid and player.rect.colliderect(enemy.solid_rect):
+                player.rect.bottom = enemy.solid_rect.top  
         for object in map.static_objects:
             if object.solid and player.rect.colliderect(object.solid_rect):
-                player.rect.bottom = object.solid_rect.top
+                player.rect.bottom = object.solid_rect.top   
 
 def draw(main_window, player, map):
     BLACK = (0, 0, 0)
@@ -122,6 +148,11 @@ def draw(main_window, player, map):
             submap_image.blit(object.image, 
                 (512+object_x_offset, 512+object_y_offset))
     
+    # draw the player to the submap_image
+    submap_image.blit(player.image, 
+        (512-int(player.rect.width/2)+player_x_offset, 
+        512-int(player.rect.height/2)+player_y_offset))
+    
     # draw the enemies onto the submap_image
     for enemy in map.enemies:
         enemy_tile_x = int(enemy.rect.centerx/MAP_TILE_SIZE)
@@ -134,12 +165,7 @@ def draw(main_window, player, map):
             enemy_y_offset = enemy.rect.top-player.rect.centery+player_y_offset
             submap_image.blit(enemy.image, 
                 (512+enemy_x_offset, 512+enemy_y_offset))
-    
-    # draw the player to the submap_image
-    submap_image.blit(player.image, 
-        (512-int(player.rect.width/2)+player_x_offset, 
-        512-int(player.rect.height/2)+player_y_offset))
-    
+
     # if a static game object falls within the submap, draw it
     # REMEMBER: eventually want to change exactly what x, y coordinates to draw
     # from based on the object's collision rectangle

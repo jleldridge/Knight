@@ -14,3 +14,5 @@ class Player(pygame.sprite.Sprite):
         
         self.x_speed = 3
         self.y_speed = 2
+        
+        self.health = 5
