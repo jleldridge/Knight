@@ -34,7 +34,7 @@ class Slime(Enemy):
         rect.centerx = x
         rect.centery = y
         attack_power = 1
-        attack_force = 64
+        attack_force = 8
         attack_rect = rect.inflate(-5, -5)
         hittable_rect = rect.copy()
         solid_rect = attack_rect.copy()

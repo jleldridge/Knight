@@ -25,50 +25,44 @@ def handle_events(events, player):
             sys.exit()
         # this method could be dolled up a bit to account for 2 opposite keys
         # being pressed
-        if event.type == KEYDOWN:
-            if event.key == K_LEFT or event.key == ord('a'):
-                # keys_down['left'] = True
-                # keys_down['right'] = False
-                player.x_speed = 0 - player.max_x_speed
-            if event.key == K_RIGHT or event.key == ord('d'):
-                # keys_down['right'] = True
-                # keys_down['left'] = False
-                player.x_speed = player.max_x_speed
-            if event.key == K_UP or event.key == ord('w'):
-                # keys_down['up'] = True
-                # keys_down['down'] = False
-                player.y_speed = 0 - player.max_y_speed
-            if event.key == K_DOWN or event.key == ord('s'):
-                # keys_down['down'] = True
-                # keys_down['up'] = False
-                player.y_speed = player.max_y_speed
-        if event.type == KEYUP:
-            if event.key == K_LEFT or event.key == ord('a'):
-                # keys_down['left'] = False
-                player.x_speed = 0
-            if event.key == K_RIGHT or event.key == ord('d'):
-                # keys_down['right'] = False
-                player.x_speed = 0
-            if event.key == K_UP or event.key == ord('w'):
-                # keys_down['up'] = False
-                player.y_speed = 0
-            if event.key == K_DOWN or event.key == ord('s'):
-                # keys_down['down'] = False
-                player.y_speed = 0
+        # check for player statuses that would change movement somehow
+        if (not player.knockback):
+            if event.type == KEYDOWN:
+                if event.key == K_LEFT or event.key == ord('a'):
+                    player.x_speed = 0 - player.max_x_speed
+                if event.key == K_RIGHT or event.key == ord('d'):
+                    player.x_speed = player.max_x_speed
+                if event.key == K_UP or event.key == ord('w'):
+                    player.y_speed = 0 - player.max_y_speed
+                if event.key == K_DOWN or event.key == ord('s'):
+                    player.y_speed = player.max_y_speed
+            if event.type == KEYUP:
+                if event.key == K_LEFT or event.key == ord('a'):
+                    player.x_speed = 0
+                if event.key == K_RIGHT or event.key == ord('d'):
+                    player.x_speed = 0
+                if event.key == K_UP or event.key == ord('w'):
+                    player.y_speed = 0
+                if event.key == K_DOWN or event.key == ord('s'):
+                    player.y_speed = 0
 
                 
 def update_game(player, map):
     # move the player based on their speed and check for collisions
-    
+    # REMEMBER: when you get to it, let player attack rects hit before probably anything else
     # move in x direction, checking for collisions
     player.rect.left += player.x_speed
     for enemy in map.enemies:
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
+            # hitting the enemy knocks the player back based on the attack force
+            player.knockback = enemy.attack_force
             if player.x_speed < 0:
-                player.rect.left += enemy.attack_force
+                player.x_speed = player.knockback_speed
+                player.rect.left = enemy.attack_rect.right
             else:
-                player.rect.left -= enemy.attack_force
+                player.rect.right = enemy.solid_rect.left
+                player.x_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
             if player.x_speed < 0:
                 player.rect.left = enemy.solid_rect.right
@@ -80,16 +74,20 @@ def update_game(player, map):
                 player.rect.left = object.solid_rect.right
             else:
                 player.rect.right = object.solid_rect.left
-    
+
     # move in y direction, checking for collisions
     player.rect.top += player.y_speed
     for enemy in map.enemies:
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
+            # hitting the enemy knocks the player back based on attack force
+            player.knockback = enemy.attack_force
             if player.y_speed < 0:
-                player.rect.top += enemy.attack_force
+                player.rect.top = enemy.solid_rect.bottom
+                player.y_speed = player.knockback_speed
             else:
-                player.rect.top -= enemy.attack_force
+                player.rect.bottom = enemy.solid_rect.top
+                player.y_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
             if player.y_speed < 0:
                 player.rect.top = enemy.solid_rect.bottom
@@ -102,53 +100,12 @@ def update_game(player, map):
             else:
                 player.rect.bottom = object.solid_rect.top
     
-    # move player based on the buttons down and check for collisions
-    # REMEMBER: when you get to it, let player attack rects hit before probably anything else
-    # NOTE: the current order of things causes the player to 'teleport' to the other side of static_objects when pushed by an enemy's attacks
-    # if keys_down['left']:
-        # player.rect.left -= player.x_speed
-        # for enemy in map.enemies:
-            # if player.rect.colliderect(enemy.attack_rect):
-                # player.health -= enemy.attack_power
-                # player.rect.left += enemy.attack_force
-            # if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-                # player.rect.left = enemy.solid_rect.right
-        # for object in map.static_objects:
-            # if object.solid and player.rect.colliderect(object.solid_rect):
-                # player.rect.left = object.solid_rect.right
-    # if keys_down['right']:
-        # player.rect.left += player.x_speed
-        # for enemy in map.enemies:
-            # if player.rect.colliderect(enemy.attack_rect):
-                # player.health -= enemy.attack_power
-                # player.rect.left -= enemy.attack_force
-            # if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-                # player.rect.right = enemy.solid_rect.left
-        # for object in map.static_objects:
-            # if object.solid and player.rect.colliderect(object.solid_rect):
-                # player.rect.right = object.solid_rect.left
-    # if keys_down['up']:
-        # player.rect.top -= player.y_speed
-        # for enemy in map.enemies:
-            # if player.rect.colliderect(enemy.attack_rect):
-                # player.health -= enemy.attack_power
-                # player.rect.top += enemy.attack_force
-            # if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-                # player.rect.top = enemy.solid_rect.bottom
-        # for object in map.static_objects:
-            # if object.solid and player.rect.colliderect(object.solid_rect):
-                # player.rect.top = object.solid_rect.bottom
-    # if keys_down['down']:
-        # player.rect.top += player.y_speed
-        # for enemy in map.enemies:
-            # if player.rect.colliderect(enemy.attack_rect):
-                # player.health -= enemy.attack_power
-                # player.rect.top -= enemy.attack_force
-            # if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-                # player.rect.bottom = enemy.solid_rect.top  
-        # for object in map.static_objects:
-            # if object.solid and player.rect.colliderect(object.solid_rect):
-                # player.rect.bottom = object.solid_rect.top   
+    # reduce the knockback counter if it is still above 0
+    if player.knockback:
+        player.knockback -= 1
+        if player.knockback == 0:
+            player.x_speed = 0
+            player.y_speed = 0
 
 def draw(main_window, player, map):
     BLACK = (0, 0, 0)

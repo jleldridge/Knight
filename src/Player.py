@@ -17,3 +17,9 @@ class Player(pygame.sprite.Sprite):
         self.y_speed = 0
         
         self.health = 5
+
+        # knockback is a counter, knocking the player back
+        # max_speed * status['knockback'] pixels total over status['knockback']
+        # frames
+        self.knockback = 0
+        self.knockback_speed = 8
