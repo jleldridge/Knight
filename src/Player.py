@@ -13,6 +13,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
         self.x_speed = 3
-        self.y_speed = 2
+        self.y_speed = 3
         
         self.health = 5
