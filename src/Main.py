@@ -50,6 +50,7 @@ def handle_events(events, keys_down):
 def update_game(player, map, keys_down):
     # move player and check for collisions
     # REMEMBER: when you get to it, let player attack rects hit before probably anything else
+    # NOTE: the current order of things causes the player to 'teleport' to the other side of static_objects when pushed by an enemy's attacks
     if keys_down['left']:
         player.rect.left -= player.x_speed
         for enemy in map.enemies:

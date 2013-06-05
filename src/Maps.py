@@ -85,7 +85,7 @@ class Map01(Map):
         ]
 
         enemies = [
-            Slime(320, 180)
+            Slime(380, 180)
         ]
 
         Map.__init__(self, Tilesets.castle, layout, static_objects, enemies)
