@@ -71,13 +71,16 @@ def update_game(player, map):
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on the attack force
-            player.knockback = enemy.attack_force
-            if player.x_speed < 0:
-                player.x_speed = player.knockback_speed
-                player.rect.left = enemy.attack_rect.right
-            else:
-                player.rect.right = enemy.solid_rect.left
-                player.x_speed = 0 - player.knockback_speed
+            # also only knock back player if they are not already being knocked
+            # back, to prevent the player from getting stuck
+            if not player.knockback:
+                player.knockback = enemy.attack_force
+                if player.x_speed < 0:
+                    player.x_speed = player.knockback_speed
+                    player.rect.left = enemy.attack_rect.right
+                else:
+                    player.rect.right = enemy.solid_rect.left
+                    player.x_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
             if player.x_speed < 0:
                 player.rect.left = enemy.solid_rect.right
@@ -98,13 +101,16 @@ def update_game(player, map):
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on attack force
-            player.knockback = enemy.attack_force
-            if player.y_speed < 0:
-                player.rect.top = enemy.solid_rect.bottom
-                player.y_speed = player.knockback_speed
-            else:
-                player.rect.bottom = enemy.solid_rect.top
-                player.y_speed = 0 - player.knockback_speed
+            # also only knock back player if they are not already being knocked
+            # back, to prevent the player from getting stuck
+            if not player.knockback:
+                player.knockback = enemy.attack_force
+                if player.y_speed < 0:
+                    player.rect.top = enemy.solid_rect.bottom
+                    player.y_speed = player.knockback_speed
+                else:
+                    player.rect.bottom = enemy.solid_rect.top
+                    player.y_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
             if player.y_speed < 0:
                 player.rect.top = enemy.solid_rect.bottom
