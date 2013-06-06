@@ -3,8 +3,8 @@ from pygame.locals import *
 
 flags = DOUBLEBUF
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+X_RESOLUTION = 1280
+Y_RESOLUTION = 800
 MAP_TILE_SIZE = 32
 
 # set up the game
@@ -12,7 +12,7 @@ pygame.init()
 main_clock = pygame.time.Clock()
 
 # create the game window
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags, 32)
+screen = pygame.display.set_mode((X_RESOLUTION, Y_RESOLUTION), flags, 32)
 screen.set_alpha(None)
 pygame.display.set_caption("Knight")
 
@@ -132,10 +132,10 @@ def draw(screen, player, map):
     WHITE = (255, 255, 255)
     screen.fill(BLACK)
     
-    screen_left = int(player.rect.centerx - WINDOW_WIDTH/2)
-    screen_top = int(player.rect.centery - WINDOW_HEIGHT/2)
-    screen_rect = pygame.Rect(screen_left, screen_top, WINDOW_WIDTH, 
-        WINDOW_HEIGHT)
+    screen_left = int(player.rect.centerx - X_RESOLUTION/2)
+    screen_top = int(player.rect.centery - Y_RESOLUTION/2)
+    screen_rect = pygame.Rect(screen_left, screen_top, X_RESOLUTION, 
+        Y_RESOLUTION)
     
     # draw the screen
     for row in map.layout:
@@ -153,8 +153,8 @@ def draw(screen, player, map):
                     object.rect.top-screen_rect.top))
     
     # draw the player to the screen
-    player_draw_x = int(WINDOW_WIDTH/2 - player.rect.width/2)
-    player_draw_y = int(WINDOW_HEIGHT/2 - player.rect.height/2)
+    player_draw_x = int(X_RESOLUTION/2 - player.rect.width/2)
+    player_draw_y = int(Y_RESOLUTION/2 - player.rect.height/2)
     screen.blit(player.image, (player_draw_x, player_draw_y))
     
     # draw static objects that the player should be behind
@@ -169,6 +169,8 @@ def draw(screen, player, map):
         if enemy.rect.colliderect(screen_rect):
             screen.blit(enemy.image, (enemy.rect.left-screen_rect.left, 
                 enemy.rect.top-screen_rect.top))
+
+
 def main():
     player = Player.Player()
     player.rect.centerx = 0
