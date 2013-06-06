@@ -1,6 +1,8 @@
 import pygame, sys, math
 from pygame.locals import *
 
+flags = DOUBLEBUF
+
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 MAP_TILE_SIZE = 32
@@ -10,7 +12,8 @@ pygame.init()
 main_clock = pygame.time.Clock()
 
 # create the game window
-main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
+main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags, 32)
+main_window.set_alpha(None)
 pygame.display.set_caption("Knight")
 
 import Player, Image_Utils, Tilesets, Maps
