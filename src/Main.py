@@ -77,7 +77,23 @@ def update_game(player, map):
     player.rect.left += player.x_speed
     for enemy in map.enemies:
         # move the enemy in the x_direction
-        enemy.move_x()
+        enemy.move_x(enemy.x_speed)
+        
+        #check if this enemy collided with anything else if it's solid
+        if enemy.solid:
+            for e in map.enemies:
+                while (e.solid and enemy != e and 
+                    enemy.solid_rect.colliderect(e.solid_rect)):
+                    if enemy.solid_rect.left > e.solid_rect.left:
+                        enemy.move_x(1)
+                    else:
+                        enemy.move_x(-1)
+            for o in map.static_objects:
+                while (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
+                    if enemy.solid_rect.left > o.solid_rect.left:
+                        enemy.move_x(1)
+                    else:
+                        enemy.move_x(-1)
         
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
@@ -107,8 +123,24 @@ def update_game(player, map):
     player.rect.top += player.y_speed
     for enemy in map.enemies:
         # move the enemy in the y direction
-        enemy.move_y()
+        enemy.move_y(enemy.y_speed)
         
+        #check if this enemy collided with anything else if it's solid
+        if enemy.solid:
+            for e in map.enemies:
+                while (e.solid and enemy != e and 
+                    enemy.solid_rect.colliderect(e.solid_rect)):
+                    if enemy.solid_rect.top > e.solid_rect.top:
+                        enemy.move_y(1)
+                    else:
+                        enemy.move_y(-1)
+            for o in map.static_objects:
+                while (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
+                    if enemy.solid_rect.top > o.solid_rect.top:
+                        enemy.move_y(1)
+                    else:
+                        enemy.move_y(-1)
+                        
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on attack force
@@ -170,19 +202,18 @@ def draw(screen, player, map):
     player_draw_y = int(Y_RESOLUTION/2 - player.rect.height/2)
     screen.blit(player.image, (player_draw_x, player_draw_y))
     
+    # draw the enemies
+    for enemy in map.enemies:
+        if enemy.rect.colliderect(screen_rect):
+            screen.blit(enemy.image, (enemy.rect.left-screen_rect.left, 
+                enemy.rect.top-screen_rect.top))
+    
     # draw static objects that the player should be behind
     for object in map.static_objects:
         if not object.background:
             if object.rect.colliderect(screen_rect):
                 screen.blit(object.image, (object.rect.left-screen_rect.left,
                     object.rect.top-screen_rect.top))
-    
-    # draw the enemies
-    for enemy in map.enemies:
-        if enemy.rect.colliderect(screen_rect):
-            screen.blit(enemy.image, (enemy.rect.left-screen_rect.left, 
-                enemy.rect.top-screen_rect.top))
-
 
 def main():
     player = Player.Player()

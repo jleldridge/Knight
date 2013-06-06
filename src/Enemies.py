@@ -101,14 +101,14 @@ class Slime(Enemy):
             self.x_speed = 0
             self.y_speed = 0
     
-    def move_x(self):
+    def move_x(self, distance):
         for rect in self.rects:
-            rect.left += self.x_speed
+            rect.left += distance
     
     
-    def move_y(self):
+    def move_y(self, distance):
         for rect in self.rects:
-            rect.top += self.y_speed
+            rect.top += distance
     
     
     
