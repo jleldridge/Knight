@@ -5,10 +5,15 @@ ALPHA_COLOR = (255, 0, 255)
 
 class Enemy(pygame.sprite.Sprite):
     
+    STUCK_X = "stuck_x"
+    STUCK_Y = "stuck_y"
+    
     def __init__(self, image, rect, attack_power, attack_force, solid=False, 
     solid_rect=None, attack_rect=None, hittable_rect=None):
         pygame.sprite.Sprite.__init__(self)
         
+        # create a list to keep track of observed information
+        self.observation = {'stuck_x': False, 'stuck_y': False}
         # create a list to keep track of all of the rects
         self.rects = []
         
@@ -39,6 +44,10 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         # execute this enemy's ai
         pass
+    
+    def observe(self, info, status):
+        # receive info from the environment
+        self.observation[info] = status
 
 # Enemy definitions
 
@@ -76,13 +85,19 @@ class Slime(Enemy):
         
         # if the player is within aggro range, move towards the player
         if distance <= self.aggro_distance:
-            if abs(x_distance) > abs(y_distance):
+            if self.observation['stuck_y']:
+                self.y_speed = 0
+                self.x_speed = self.max_x_speed
+            elif self.observation['stuck_x']:
+                self.x_speed = 0
+                self.y_speed = self.max_y_speed
+            elif (abs(x_distance) > abs(y_distance)):
                 self.y_speed = 0
                 if x_distance < 0:
                     self.x_speed = 0 - self.max_x_speed
                 else:
                     self.x_speed = self.max_x_speed
-            elif abs(y_distance) > abs(x_distance):
+            elif (abs(y_distance) > abs(x_distance)):
                 self.x_speed = 0
                 if y_distance < 0:
                     self.y_speed = 0 - self.max_y_speed
@@ -100,6 +115,7 @@ class Slime(Enemy):
         else:
             self.x_speed = 0
             self.y_speed = 0
+            
     
     def move_x(self, distance):
         for rect in self.rects:

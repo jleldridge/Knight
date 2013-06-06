@@ -81,19 +81,24 @@ def update_game(player, map):
         
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
+            enemy_stuck_x = False
             for e in map.enemies:
-                while (e.solid and enemy != e and 
+                if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
-                    if enemy.solid_rect.left > e.solid_rect.left:
-                        enemy.move_x(1)
-                    else:
-                        enemy.move_x(-1)
+                    while (enemy.solid_rect.colliderect(e.solid_rect)):
+                        if enemy.solid_rect.left > e.solid_rect.left:
+                            enemy.move_x(1)
+                        else:
+                            enemy.move_x(-1)
             for o in map.static_objects:
-                while (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
-                    if enemy.solid_rect.left > o.solid_rect.left:
-                        enemy.move_x(1)
-                    else:
-                        enemy.move_x(-1)
+                if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
+                    enemy_stuck_x = True
+                    while (enemy.solid_rect.colliderect(o.solid_rect)):
+                        if enemy.solid_rect.left > o.solid_rect.left:
+                            enemy.move_x(1)
+                        else:
+                            enemy.move_x(-1)
+            enemy.observe(enemy.STUCK_X, enemy_stuck_x)
         
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
@@ -127,19 +132,24 @@ def update_game(player, map):
         
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
+            enemy_stuck_y = False
             for e in map.enemies:
-                while (e.solid and enemy != e and 
+                if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
-                    if enemy.solid_rect.top > e.solid_rect.top:
-                        enemy.move_y(1)
-                    else:
-                        enemy.move_y(-1)
+                    while (enemy.solid_rect.colliderect(e.solid_rect)):
+                        if enemy.solid_rect.top > e.solid_rect.top:
+                            enemy.move_y(1)
+                        else:
+                            enemy.move_y(-1)
             for o in map.static_objects:
-                while (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
-                    if enemy.solid_rect.top > o.solid_rect.top:
-                        enemy.move_y(1)
-                    else:
-                        enemy.move_y(-1)
+                if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
+                    enemy_stuck_y = True
+                    while (enemy.solid_rect.colliderect(o.solid_rect)):
+                        if enemy.solid_rect.top > o.solid_rect.top:
+                            enemy.move_y(1)
+                        else:
+                            enemy.move_y(-1)
+            enemy.observe(enemy.STUCK_Y, enemy_stuck_y)
                         
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
