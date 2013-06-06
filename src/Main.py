@@ -18,7 +18,6 @@ pygame.display.set_caption("Knight")
 
 import Player, Image_Utils, Tilesets, Maps
 
-# create the submap_image here instead of in draw() for speed
 keys_down = {'left': False, 'right': False, 'up': False, 'down': False}
 
 def handle_events(events, player):

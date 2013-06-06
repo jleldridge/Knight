@@ -27,8 +27,7 @@ class Slime(Enemy):
     
     def __init__(self, x, y):
         # slime will temporarily be a green square
-        image = pygame.Surface((32, 32)).convert()
-        image.fill((0, 255, 30))
+        image = pygame.image.load("src/Slime.png").convert()
         image.set_colorkey(ALPHA_COLOR)
         rect = image.get_rect()
         rect.centerx = x
