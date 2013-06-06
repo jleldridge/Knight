@@ -4,7 +4,7 @@ from pygame.locals import *
 flags = DOUBLEBUF
 
 X_RESOLUTION = 1280
-Y_RESOLUTION = 800
+Y_RESOLUTION = 700
 MAP_TILE_SIZE = 32
 
 # set up the game
@@ -66,11 +66,19 @@ def handle_events(events, player):
             player.y_speed = 0
                 
 def update_game(player, map):
-    # move the player based on their speed and check for collisions
+    # have the enemies plan their moves
+    for enemy in map.enemies:
+        enemy.update(player)
+    
+    # move the game objects based on their speed and check for collisions
     # REMEMBER: when you get to it, let player attack rects hit before probably anything else
+    
     # move in x direction, checking for collisions
     player.rect.left += player.x_speed
     for enemy in map.enemies:
+        # move the enemy in the x_direction
+        enemy.move_x()
+        
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on the attack force
@@ -78,21 +86,19 @@ def update_game(player, map):
             # back, to prevent the player from getting stuck
             if not player.knockback:
                 player.knockback = enemy.attack_force
-                if player.x_speed < 0:
+                if player.rect.left > enemy.attack_rect.left:
                     player.x_speed = player.knockback_speed
-                    player.rect.left = enemy.attack_rect.right
                 else:
-                    player.rect.right = enemy.solid_rect.left
                     player.x_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-            if player.x_speed < 0:
+            if player.rect.left > enemy.solid_rect.left:
                 player.rect.left = enemy.solid_rect.right
             else:
                 player.rect.right = enemy.solid_rect.left
     # check for collisions with objects
     for object in map.static_objects:
         if object.solid and player.rect.colliderect(object.solid_rect):
-            if player.x_speed < 0:
+            if player.rect.left > object.solid_rect.left:
                 player.rect.left = object.solid_rect.right
             else:
                 player.rect.right = object.solid_rect.left
@@ -100,6 +106,9 @@ def update_game(player, map):
     # move in y direction, checking for collisions
     player.rect.top += player.y_speed
     for enemy in map.enemies:
+        # move the enemy in the y direction
+        enemy.move_y()
+        
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on attack force
@@ -107,21 +116,19 @@ def update_game(player, map):
             # back, to prevent the player from getting stuck
             if not player.knockback:
                 player.knockback = enemy.attack_force
-                if player.y_speed < 0:
-                    player.rect.top = enemy.solid_rect.bottom
+                if player.rect.top > enemy.attack_rect.top:
                     player.y_speed = player.knockback_speed
                 else:
-                    player.rect.bottom = enemy.solid_rect.top
                     player.y_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-            if player.y_speed < 0:
+            if player.rect.top > enemy.solid_rect.top:
                 player.rect.top = enemy.solid_rect.bottom
             else:
                 player.rect.bottom = enemy.solid_rect.top
         # check for collisions with objects
     for object in map.static_objects:
         if object.solid and player.rect.colliderect(object.solid_rect):
-            if player.y_speed < 0:
+            if player.rect.top > object.solid_rect.top:
                 player.rect.top = object.solid_rect.bottom
             else:
                 player.rect.bottom = object.solid_rect.top
