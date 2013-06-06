@@ -59,7 +59,7 @@ class Slime(Enemy):
         Enemy.__init__(self, image, rect, attack_power, attack_force, True, 
             solid_rect, attack_rect, hittable_rect)
         
-        self.aggro_distance = 200
+        self.aggro_distance = 400
         self.x_speed = 0
         self.y_speed = 0
         self.max_x_speed = 1

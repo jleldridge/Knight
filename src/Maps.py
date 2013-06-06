@@ -98,6 +98,7 @@ class Map01(Map):
         ]
 
         enemies = [
+            Slime(380, 180), Slime(460, 180), Slime(460, 180), Slime(460, 180), 
             Slime(380, 180), Slime(460, 180), Slime(460, 180), Slime(460, 180)
         ]
 
