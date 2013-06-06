@@ -15,6 +15,9 @@ main_clock = pygame.time.Clock()
 screen = pygame.display.set_mode((X_RESOLUTION, Y_RESOLUTION), flags, 32)
 screen.set_alpha(None)
 pygame.display.set_caption("Knight")
+icon = pygame.image.load("src/Slime.png").convert()
+icon.set_colorkey((255, 0, 255))
+pygame.display.set_icon(icon)
 
 import Player, Image_Utils, Tilesets, Maps
 
@@ -86,14 +89,13 @@ def update_game(player, map):
                 player.rect.left = enemy.solid_rect.right
             else:
                 player.rect.right = enemy.solid_rect.left
-    #only check solid object collisions if the player is moving
-    if(player.x_speed):
-        for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.solid_rect):
-                if player.x_speed < 0:
-                    player.rect.left = object.solid_rect.right
-                else:
-                    player.rect.right = object.solid_rect.left
+    # check for collisions with objects
+    for object in map.static_objects:
+        if object.solid and player.rect.colliderect(object.solid_rect):
+            if player.x_speed < 0:
+                player.rect.left = object.solid_rect.right
+            else:
+                player.rect.right = object.solid_rect.left
 
     # move in y direction, checking for collisions
     player.rect.top += player.y_speed
@@ -116,14 +118,13 @@ def update_game(player, map):
                 player.rect.top = enemy.solid_rect.bottom
             else:
                 player.rect.bottom = enemy.solid_rect.top
-    #only check solid object collisions if the player is moving
-    if(player.y_speed):
-        for object in map.static_objects:
-            if object.solid and player.rect.colliderect(object.solid_rect):
-                if player.y_speed < 0:
-                    player.rect.top = object.solid_rect.bottom
-                else:
-                    player.rect.bottom = object.solid_rect.top
+        # check for collisions with objects
+    for object in map.static_objects:
+        if object.solid and player.rect.colliderect(object.solid_rect):
+            if player.y_speed < 0:
+                player.rect.top = object.solid_rect.bottom
+            else:
+                player.rect.bottom = object.solid_rect.top
     
     # reduce the knockback counter if it is still above 0
     if player.knockback:
