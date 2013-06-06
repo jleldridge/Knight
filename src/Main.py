@@ -128,10 +128,6 @@ def update_game(player, map):
             player.y_speed = 0
 
 def draw(screen, player, map):
-    # might actually be able to manage dirty rendering with this process,
-    # just need to create an equality method for tiles to see if the tile
-    # was changed, and change any rects where the player or objects have moved
-    # to or from.
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     screen.fill(BLACK)
