@@ -87,10 +87,16 @@ class Slime(Enemy):
         if distance <= self.aggro_distance:
             if self.observation['stuck_y']:
                 self.y_speed = 0
-                self.x_speed = self.max_x_speed
+                if x_distance < 0:
+                    self.x_speed = 0 - self.max_x_speed
+                else:
+                    self.x_speed = self.max_x_speed
             elif self.observation['stuck_x']:
                 self.x_speed = 0
-                self.y_speed = self.max_y_speed
+                if y_distance < 0:
+                    self.y_speed = 0 - self.max_y_speed
+                else:
+                    self.y_speed = self.max_y_speed
             elif (abs(x_distance) > abs(y_distance)):
                 self.y_speed = 0
                 if x_distance < 0:
