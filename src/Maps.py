@@ -2,11 +2,24 @@ import Tilesets
 from Knight_Game_Objects import *
 from Enemies import *
 
+class Tile:
+    
+    def __init__(self, rect, image):
+        self.rect = rect
+        self.image = image
+
 class Map:
     
     def __init__(self, tileset, layout, static_objects=[], enemies=[]):
         self.tileset = tileset
-        self.layout = layout
+        self.layout = []
+        for i in range(len(layout)):
+            temp_row = []
+            for j in range(len(layout[0])):
+                temp_rect = pygame.Rect(j*32, i*32, 32, 32)
+                temp_row.append(Tile(temp_rect, self.tileset[layout[i][j]]))
+            self.layout.append(temp_row)
+
         self.static_objects = static_objects
         self.blank_tile = pygame.Surface((32, 32)).convert()
         self.enemies = enemies

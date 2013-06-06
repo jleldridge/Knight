@@ -12,14 +12,13 @@ pygame.init()
 main_clock = pygame.time.Clock()
 
 # create the game window
-main_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags, 32)
-main_window.set_alpha(None)
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags, 32)
+screen.set_alpha(None)
 pygame.display.set_caption("Knight")
 
 import Player, Image_Utils, Tilesets, Maps
 
 # create the submap_image here instead of in draw() for speed
-submap_image = pygame.Surface((1024, 1024)).convert()
 keys_down = {'left': False, 'right': False, 'up': False, 'down': False}
 
 def handle_events(events, player):
@@ -128,102 +127,52 @@ def update_game(player, map):
             player.x_speed = 0
             player.y_speed = 0
 
-def draw(main_window, player, map):
+def draw(screen, player, map):
+    # might actually be able to manage dirty rendering with this process,
+    # just need to create an equality method for tiles to see if the tile
+    # was changed, and change any rects where the player or objects have moved
+    # to or from.
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
-    main_window.fill(BLACK)
+    screen.fill(BLACK)
     
-    # find which tile of the map the player is on
-    player_map_x = int(player.rect.centerx/MAP_TILE_SIZE)
-    player_map_y = int(player.rect.centery/MAP_TILE_SIZE)
-    player_x_offset = player.rect.centerx-(player_map_x*32)
-    player_y_offset = player.rect.centery-(player_map_y*32)
+    screen_left = int(player.rect.centerx - WINDOW_WIDTH/2)
+    screen_top = int(player.rect.centery - WINDOW_HEIGHT/2)
+    screen_rect = pygame.Rect(screen_left, screen_top, WINDOW_WIDTH, 
+        WINDOW_HEIGHT)
     
-    # create a 2-d list to hold the tiles of the map that we will draw
-    submap = []
-    for i in range(32):
-        temp_row = []
-        for j in range(32):
-            map_row = player_map_y-16+i
-            map_col = player_map_x-16+j
-            if ((map_row>=0) and (map_col>=0) and (map_row<len(map.layout)) and 
-                (map_col<len(map.layout[0]))):
-                temp_row.append(map.layout[map_row][map_col])
-            else:
-                temp_row.append(-1)
-        submap.append(temp_row)
-            
-    # draw the necessary part of the map
-    submap_image.fill(BLACK)
-    for i in range(32):
-        for j in range(32):
-            if submap[i][j] < 0:
-                submap_image.blit(map.blank_tile, (j*32, i*32))
-            else:
-                submap_image.blit(map.tileset[submap[i][j]], (j*32, i*32))
+    # draw the screen
+    for row in map.layout:
+        for tile in row:
+            if tile.rect.colliderect(screen_rect):
+                # draw the tile to screen
+                screen.blit(tile.image, (tile.rect.left-screen_rect.left, 
+                    tile.rect.top-screen_rect.top))
     
-    # if a static game object falls within the submap and is a background object,
-    # draw it before the player
-    # REMEMBER: eventually want to change exactly what x, y coordinates to draw
-    # from based on the object's collision rectangle
+    # draw static objects that the player should be in front of
     for object in map.static_objects:
-        object_tile_x = int(object.rect.centerx/MAP_TILE_SIZE)
-        object_tile_y = int(object.rect.centery/MAP_TILE_SIZE)
-        
-        if ((object_tile_x > player_map_x-16) and 
-            (object_tile_y > player_map_y-16) and
-            (object_tile_x <= player_map_x+16) and 
-            (object_tile_y <= player_map_y+16) and
-            (object.background)):
-            # draw the object based on its offset from the player
-            object_x_offset = object.rect.left-player.rect.centerx+player_x_offset
-            object_y_offset = object.rect.top-player.rect.centery+player_y_offset
-            submap_image.blit(object.image, 
-                (512+object_x_offset, 512+object_y_offset))
+        if object.background:
+            if object.rect.colliderect(screen_rect):
+                screen.blit(object.image, (object.rect.left-screen_rect.left,
+                    object.rect.top-screen_rect.top))
     
-    # draw the player to the submap_image
-    submap_image.blit(player.image, 
-        (512-int(player.rect.width/2)+player_x_offset, 
-        512-int(player.rect.height/2)+player_y_offset))
+    # draw the player to the screen
+    player_draw_x = int(WINDOW_WIDTH/2 - player.rect.width/2)
+    player_draw_y = int(WINDOW_HEIGHT/2 - player.rect.height/2)
+    screen.blit(player.image, (player_draw_x, player_draw_y))
     
-    # draw the enemies onto the submap_image
+    # draw static objects that the player should be behind
+    for object in map.static_objects:
+        if not object.background:
+            if object.rect.colliderect(screen_rect):
+                screen.blit(object.image, (object.rect.left-screen_rect.left,
+                    object.rect.top-screen_rect.top))
+    
+    # draw the enemies
     for enemy in map.enemies:
-        enemy_tile_x = int(enemy.rect.centerx/MAP_TILE_SIZE)
-        enemy_tile_y = int(enemy.rect.centery/MAP_TILE_SIZE)
-        if ((enemy_tile_x > player_map_x-16) and 
-            (enemy_tile_y > player_map_y-16) and
-            (enemy_tile_x <= player_map_x+16) and 
-            (enemy_tile_y <= player_map_y+16)):
-            enemy_x_offset = enemy.rect.left-player.rect.centerx+player_x_offset
-            enemy_y_offset = enemy.rect.top-player.rect.centery+player_y_offset
-            submap_image.blit(enemy.image, 
-                (512+enemy_x_offset, 512+enemy_y_offset))
-
-    # if a static game object falls within the submap, draw it
-    # REMEMBER: eventually want to change exactly what x, y coordinates to draw
-    # from based on the object's collision rectangle
-    for object in map.static_objects:
-        object_tile_x = int(object.rect.centerx/MAP_TILE_SIZE)
-        object_tile_y = int(object.rect.centery/MAP_TILE_SIZE)
-        
-        if ((object_tile_x > player_map_x-16) and 
-            (object_tile_y > player_map_y-16) and
-            (object_tile_x <= player_map_x+16) and 
-            (object_tile_y <= player_map_y+16) and
-            (not object.background)):
-            # draw the object based on its offset from the player
-            object_x_offset = object.rect.left-player.rect.centerx+player_x_offset
-            object_y_offset = object.rect.top-player.rect.centery+player_y_offset
-            submap_image.blit(object.image, 
-                (512+object_x_offset, 512+object_y_offset))
-    
-    screen_centerx = int(WINDOW_WIDTH/2)
-    screen_centery = int(WINDOW_HEIGHT/2)
-    
-    # draw the map_subimage to the screen
-    main_window.blit(submap_image, (screen_centerx-512-player_x_offset,
-        screen_centery-512-player_y_offset))
-
+        if enemy.rect.colliderect(screen_rect):
+            screen.blit(enemy.image, (enemy.rect.left-screen_rect.left, 
+                enemy.rect.top-screen_rect.top))
 def main():
     player = Player.Player()
     player.rect.centerx = 0
@@ -240,7 +189,7 @@ def main():
         # update the game
         update_game(player, map)
         # draw game objects
-        draw(main_window, player, map)
+        draw(screen, player, map)
         
         pygame.display.flip()
         main_clock.tick(60)
