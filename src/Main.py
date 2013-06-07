@@ -68,7 +68,7 @@ def handle_events(events, player):
 def update_game(player, map):
     # have the enemies plan their moves
     for enemy in map.enemies:
-        enemy.update(player)
+        enemy.update(player, map)
     
     # move the game objects based on their speed and check for collisions
     # REMEMBER: when you get to it, let player attack rects hit before probably anything else
@@ -81,7 +81,6 @@ def update_game(player, map):
         
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
-            enemy_stuck_x = False
             for e in map.enemies:
                 if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
@@ -92,13 +91,11 @@ def update_game(player, map):
                             enemy.move_x(-1)
             for o in map.static_objects:
                 if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
-                    enemy_stuck_x = True
                     while (enemy.solid_rect.colliderect(o.solid_rect)):
                         if enemy.solid_rect.left > o.solid_rect.left:
                             enemy.move_x(1)
                         else:
                             enemy.move_x(-1)
-            enemy.observe(enemy.STUCK_X, enemy_stuck_x)
         
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
@@ -132,7 +129,6 @@ def update_game(player, map):
         
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
-            enemy_stuck_y = False
             for e in map.enemies:
                 if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
@@ -143,13 +139,11 @@ def update_game(player, map):
                             enemy.move_y(-1)
             for o in map.static_objects:
                 if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
-                    enemy_stuck_y = True
                     while (enemy.solid_rect.colliderect(o.solid_rect)):
                         if enemy.solid_rect.top > o.solid_rect.top:
                             enemy.move_y(1)
                         else:
                             enemy.move_y(-1)
-            enemy.observe(enemy.STUCK_Y, enemy_stuck_y)
                         
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
