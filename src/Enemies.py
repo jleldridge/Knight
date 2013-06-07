@@ -72,7 +72,8 @@ class Enemy(pygame.sprite.Sprite):
                 
                 for e in map.enemies:
                     if e.solid and e != self and r.colliderect(e.solid_rect):
-                        moves.remove(m)
+                        try: moves.remove(m)
+                        except: pass
                         self.visited_rects.append(r)
                 for o in map.static_objects:
                     if o.solid and r.colliderect(o.solid_rect):
