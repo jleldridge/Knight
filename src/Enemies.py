@@ -8,10 +8,6 @@ class Enemy(pygame.sprite.Sprite):
     STUCK_X = "stuck_x"
     STUCK_Y = "stuck_y"
     
-    max_x_speed = 0
-    max_y_speed = 0
-    visited_rects = []
-    
     def __init__(self, image, rect, attack_power, attack_force, solid=False, 
     solid_rect=None, attack_rect=None, hittable_rect=None):
         pygame.sprite.Sprite.__init__(self)
@@ -44,7 +40,12 @@ class Enemy(pygame.sprite.Sprite):
         self.hittable_rect = hittable_rect
         if self.hittable_rect:
             self.rects.append(hittable_rect)
-     
+        
+        self.max_x_speed = 0
+        self.max_y_speed = 0
+        self.visited_rects = []
+    
+    
     def update(self, player, map):
         # prepare to execute this enemy's next move
         pass
