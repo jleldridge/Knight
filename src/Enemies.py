@@ -135,8 +135,8 @@ class Slime(Enemy):
         self.aggro_distance = 400
         self.x_speed = 0
         self.y_speed = 0
-        self.max_x_speed = 1
-        self.max_y_speed = 1
+        self.max_x_speed = 2
+        self.max_y_speed = 2
         
         self.chase_counter = 100
     
