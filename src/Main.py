@@ -64,43 +64,37 @@ def handle_events(events, player):
             player.y_speed = player.max_y_speed
         else:
             player.y_speed = 0
-                
-def update_game(player, map):
-    # have the enemies plan their moves
-    for enemy in map.enemies:
-        enemy.update(player, map)
-    
+
+def move_and_check_collisions(player, map):
     # move the game objects based on their speed and check for collisions
     # REMEMBER: when you get to it, let player attack rects hit before probably anything else
     
     # store the player's old position to determine where collisions occur with
     # other objects
     player_prev_left = player.rect.left
-    
     # move in x direction, checking for collisions
     player.rect.left += player.x_speed
     for enemy in map.enemies:
         # move the enemy in the x_direction
         enemy.move_x(enemy.x_speed)
-        
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
+            enemy_prev_left = enemy.solid_rect.left
             for e in map.enemies:
                 if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
                     while (enemy.solid_rect.colliderect(e.solid_rect)):
-                        if enemy.solid_rect.left > e.solid_rect.left:
+                        if enemy_prev_left > e.solid_rect.left:
                             enemy.move_x(1)
                         else:
                             enemy.move_x(-1)
             for o in map.static_objects:
                 if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
                     while (enemy.solid_rect.colliderect(o.solid_rect)):
-                        if enemy.solid_rect.left > o.solid_rect.left:
+                        if enemy_prev_left > o.solid_rect.left:
                             enemy.move_x(1)
                         else:
                             enemy.move_x(-1)
-        
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on the attack force
@@ -125,34 +119,34 @@ def update_game(player, map):
             else:
                 player.rect.right = object.solid_rect.left
 
+    
+    
     # store the player's old position to determine where collisions occur with
     # other objects
     player_prev_top = player.rect.top
-    
     # move in y direction, checking for collisions
     player.rect.top += player.y_speed
     for enemy in map.enemies:
+        enemy_prev_top = enemy.solid_rect.top
         # move the enemy in the y direction
         enemy.move_y(enemy.y_speed)
-        
         #check if this enemy collided with anything else if it's solid
         if enemy.solid:
             for e in map.enemies:
                 if (e.solid and enemy != e and 
                     enemy.solid_rect.colliderect(e.solid_rect)):
                     while (enemy.solid_rect.colliderect(e.solid_rect)):
-                        if enemy.solid_rect.top > e.solid_rect.top:
+                        if enemy_prev_top > e.solid_rect.top:
                             enemy.move_y(1)
                         else:
                             enemy.move_y(-1)
             for o in map.static_objects:
                 if (o.solid and enemy.solid_rect.colliderect(o.solid_rect)):
                     while (enemy.solid_rect.colliderect(o.solid_rect)):
-                        if enemy.solid_rect.top > o.solid_rect.top:
+                        if enemy_prev_top > o.solid_rect.top:
                             enemy.move_y(1)
                         else:
                             enemy.move_y(-1)
-                        
         if player.rect.colliderect(enemy.attack_rect):
             player.health -= enemy.attack_power
             # hitting the enemy knocks the player back based on attack force
@@ -176,6 +170,15 @@ def update_game(player, map):
                 player.rect.top = object.solid_rect.bottom
             else:
                 player.rect.bottom = object.solid_rect.top
+            
+
+def update_game(player, map):
+    # have the enemies plan their moves
+    for enemy in map.enemies:
+        enemy.update(player, map)
+    
+    # have all objects make their moves
+    move_and_check_collisions(player, map)
     
     # reduce the knockback counter if it is still above 0
     if player.knockback:
@@ -184,6 +187,7 @@ def update_game(player, map):
             player.x_speed = 0
             player.y_speed = 0
 
+            
 def draw(screen, player, map):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
