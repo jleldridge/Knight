@@ -107,10 +107,12 @@ def move_and_check_collisions(player, map):
                 else:
                     player.x_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-            if player_prev_left > enemy.solid_rect.left:
+            if player_prev_left > enemy_prev_left:
                 player.rect.left = enemy.solid_rect.right
+                # enemy.move_x(player.rect.left-enemy.solid_rect.right)
             else:
                 player.rect.right = enemy.solid_rect.left
+                # enemy.move_x(player.rect.right-enemy.solid_rect.left)
     # check for collisions with objects
     for object in map.static_objects:
         if object.solid and player.rect.colliderect(object.solid_rect):
@@ -159,10 +161,12 @@ def move_and_check_collisions(player, map):
                 else:
                     player.y_speed = 0 - player.knockback_speed
         if enemy.solid and player.rect.colliderect(enemy.solid_rect):
-            if player_prev_top > enemy.solid_rect.top:
+            if player_prev_top > enemy_prev_top:
                 player.rect.top = enemy.solid_rect.bottom
+                # enemy.move_y(player.rect.top-enemy.solid_rect.bottom)
             else:
                 player.rect.bottom = enemy.solid_rect.top
+                # enemy.move_y(player.rect.bottom-enemy.solid_rect.top)
         # check for collisions with objects
     for object in map.static_objects:
         if object.solid and player.rect.colliderect(object.solid_rect):
